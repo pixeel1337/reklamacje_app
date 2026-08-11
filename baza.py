@@ -2,7 +2,12 @@ import json
 import os
 import datetime
 import shutil
+
+
 from generuj_pdf import generujPdf
+from generuj_json import generujJSON
+
+
 
 FOLDER_PROJEKTU = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(FOLDER_PROJEKTU, "reklamacje.json")
@@ -27,9 +32,8 @@ def zapiszReklamacje(dane):
 
 
 def przygotuj_i_kopiuj_zalaczniki(
-    rok, id_zgl, nr_rek, lista_sciezek_zrodlowych, dane
+    rok, id_zgl, nr_rek, lista_sciezek_zrodlowych, dane_zgloszenia
 ):
-
     if not lista_sciezek_zrodlowych:
         lista_sciezek_zrodlowych = []
 
@@ -41,11 +45,19 @@ def przygotuj_i_kopiuj_zalaczniki(
 
     try:
         sciezka_pdf = generujPdf(
-            folder_docelowy, dane, nr_rek, FOLDER_PROJEKTU
+            folder_docelowy, dane_zgloszenia, nr_rek, FOLDER_PROJEKTU
         )
         zapisane_pliki.append(sciezka_pdf)
     except Exception as e:
         print(f"[BŁĄD GENEROWANIA PDF]: {e}")
+
+    try:
+        sciezka_json = generujJSON(
+            folder_docelowy, dane_zgloszenia, nazwa_folderu, FOLDER_PROJEKTU
+        )
+        zapisane_pliki.append(sciezka_json)
+    except Exception as e:
+        print(f"[BŁĄD ZAPISU POJEDYNCZEGO JSON]: {e}")
 
     for sciezka_pliku in lista_sciezek_zrodlowych:
         if os.path.exists(sciezka_pliku):

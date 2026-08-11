@@ -1,9 +1,25 @@
-import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
-from baza import dodajReklamacje
-import os
 import datetime
+import os
+import threading
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
 
+from baza import dodajReklamacje, wczytajDane
+from obsluga_maili import wyslijMaila
+
+MAILE_DYREKTOROW = {
+    "Anna Kowalska": "kamilgraczyk1@gmail.com",
+    "Marek Nowak": "kamilgraczyk1@gmail.com",
+    "Piotr Wiśniewski": "kamilgraczyk1@gmail.com",
+}
+
+
+def generuj_nastepny_nr_rek():
+    dane = wczytajDane()
+    max_id = max([r.get("id", 0) for r in dane], default=0)
+    nastepne_id = max_id + 1
+    rok = datetime.date.today().year
+    return f"ZG/{rok}/{nastepne_id:03d}"
 
 
 def otworzFormularzDodawania(parent_window, callback_odswiez=None):
@@ -15,32 +31,52 @@ def otworzFormularzDodawania(parent_window, callback_odswiez=None):
     form_window.transient(parent_window)
     form_window.grab_set()
 
-
     wybrane_zalaczniki = []
     dzisiaj = datetime.date.today().strftime("%d.%m.%Y")
-
+    nastepny_nr_rek = generuj_nastepny_nr_rek()
 
     top_bar = tk.Frame(form_window, bg="#f4f1ea", padx=20, pady=15)
     top_bar.pack(fill="x")
 
-    btn_back = tk.Button(top_bar, text="← Wróć do rejestru", font=("Segoe UI", 10, "bold"),
-                         bg="#f4f1ea", fg="#1f4e5b", bd=0, cursor="hand2",
-                         command=form_window.destroy)
+    btn_back = tk.Button(
+        top_bar,
+        text="← Wróć do rejestru",
+        font=("Segoe UI", 10, "bold"),
+        bg="#f4f1ea",
+        fg="#1f4e5b",
+        bd=0,
+        cursor="hand2",
+        command=form_window.destroy,
+    )
     btn_back.pack(side="left")
 
     nr_badge_frame = tk.Frame(top_bar, bg="#f4f1ea")
     nr_badge_frame.pack(side="right")
 
-    lbl_nr = tk.Label(nr_badge_frame, text="ZG/2026/001", font=("Segoe UI", 10, "bold"), bg="#f4f1ea", fg="#334155")
+    lbl_nr = tk.Label(
+        nr_badge_frame,
+        text=nastepny_nr_rek,
+        font=("Segoe UI", 10, "bold"),
+        bg="#f4f1ea",
+        fg="#334155",
+    )
     lbl_nr.pack(side="left", padx=(0, 5))
 
-    lbl_status = tk.Label(nr_badge_frame, text=" NOWE ", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#1f4e5b", relief="solid", bd=1)
+    lbl_status = tk.Label(
+        nr_badge_frame,
+        text=" NOWE ",
+        font=("Segoe UI", 8, "bold"),
+        bg="#ffffff",
+        fg="#1f4e5b",
+        relief="solid",
+        bd=1,
+    )
     lbl_status.pack(side="left")
 
     content_frame = tk.Frame(form_window, bg="#f8f6f0", padx=20)
     content_frame.pack(fill="both", expand=True)
 
-    #Kafelek pracownika 
+    # Kafelek pracownika
 
     sec1_card = tk.Frame(content_frame, bg="#f8f6f0", bd=1, relief="solid")
     sec1_card.pack(fill="x", pady=(0, 15), ipady=5)
@@ -48,9 +84,20 @@ def otworzFormularzDodawania(parent_window, callback_odswiez=None):
     card1_body = tk.Frame(content_frame, bg="#f8f6f0", padx=15, pady=10)
     card1_body.pack(fill="x")
 
-    tk.Label(card1_body, text="Osoba rejestrująca", font=("Segoe UI", 8, "bold"), bg="#f8f6f0", fg="#64748b").pack(anchor="w")
+    tk.Label(
+        card1_body,
+        text="Osoba rejestrująca",
+        font=("Segoe UI", 8, "bold"),
+        bg="#f8f6f0",
+        fg="#64748b",
+    ).pack(anchor="w")
 
-    combo_rola = ttk.Combobox(card1_body, values=["Osoba rejestrująca", "Dyrektor obszaru", "Serwisant"], state="readonly", font=("Segoe UI", 10))
+    combo_rola = ttk.Combobox(
+        card1_body,
+        values=["Osoba rejestrująca", "Dyrektor obszaru", "Serwisant"],
+        state="readonly",
+        font=("Segoe UI", 10),
+    )
     combo_rola.set("Osoba rejestrująca")
     combo_rola.pack(fill="x", pady=(5, 0), ipady=3)
 
@@ -63,7 +110,13 @@ def otworzFormularzDodawania(parent_window, callback_odswiez=None):
     card2_body.pack(fill="both", expand=True)
 
     # Tytuł
-    sec2_title = tk.Label(card2_body, text="❶  1 · REJESTRACJA ZGŁOSZENIA", font=("Segoe UI", 11, "bold"), bg="#ffffff", fg="#0f172a")
+    sec2_title = tk.Label(
+        card2_body,
+        text="❶  1 · REJESTRACJA ZGŁOSZENIA",
+        font=("Segoe UI", 11, "bold"),
+        bg="#ffffff",
+        fg="#0f172a",
+    )
     sec2_title.pack(anchor="w", pady=(0, 15))
 
     # Wiersz 1: Data + Osoba
@@ -74,18 +127,28 @@ def otworzFormularzDodawania(parent_window, callback_odswiez=None):
 
     f_data = tk.Frame(row1, bg="#ffffff")
     f_data.grid(row=0, column=0, sticky="ew", padx=(0, 10))
-    tk.Label(f_data, text="DATA WPŁYNIĘCIA", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b").pack(anchor="w")
+    tk.Label(
+        f_data,
+        text="DATA WPŁYNIĘCIA",
+        font=("Segoe UI", 8, "bold"),
+        bg="#ffffff",
+        fg="#64748b",
+    ).pack(anchor="w")
     e_data = tk.Entry(f_data, font=("Segoe UI", 10), bd=1, relief="solid")
-    e_data.insert(0, "Data wpłynięcia")
+    e_data.insert(0, dzisiaj)
     e_data.pack(fill="x", ipady=4, pady=(3, 0))
 
     f_osoba = tk.Frame(row1, bg="#ffffff")
     f_osoba.grid(row=0, column=1, sticky="ew")
-    tk.Label(f_osoba, text="OSOBA REJESTRUJĄCA", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b").pack(anchor="w")
+    tk.Label(
+        f_osoba,
+        text="OSOBA REJESTRUJĄCA",
+        font=("Segoe UI", 8, "bold"),
+        bg="#ffffff",
+        fg="#64748b",
+    ).pack(anchor="w")
     e_osoba = tk.Entry(f_osoba, font=("Segoe UI", 10), bd=1, relief="solid")
-    e_osoba.insert(0, "Osoba rejestrująca")
     e_osoba.pack(fill="x", ipady=4, pady=(3, 0))
-
 
     # Wiersz 2: Klient + Nr Projektu
     row2 = tk.Frame(card2_body, bg="#ffffff")
@@ -95,39 +158,78 @@ def otworzFormularzDodawania(parent_window, callback_odswiez=None):
 
     f_klient = tk.Frame(row2, bg="#ffffff")
     f_klient.grid(row=0, column=0, sticky="ew", padx=(0, 10))
-    tk.Label(f_klient, text="KLIENT * ", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#b91c1c").pack(anchor="w")
-    e_klient = tk.Entry(f_klient, font=("Segoe UI", 10), bd=1, relief="solid")  
-    e_klient.insert(0, "Klient")
+    tk.Label(
+        f_klient,
+        text="KLIENT * ",
+        font=("Segoe UI", 8, "bold"),
+        bg="#ffffff",
+        fg="#b91c1c",
+    ).pack(anchor="w")
+    e_klient = tk.Entry(f_klient, font=("Segoe UI", 10), bd=1, relief="solid")
     e_klient.pack(fill="x", ipady=4, pady=(3, 0))
 
     f_projekt = tk.Frame(row2, bg="#ffffff")
     f_projekt.grid(row=0, column=1, sticky="ew")
-    tk.Label(f_projekt, text="NR PROJEKTU *", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#b91c1c").pack(anchor="w")
+    tk.Label(
+        f_projekt,
+        text="NR PROJEKTU *",
+        font=("Segoe UI", 8, "bold"),
+        bg="#ffffff",
+        fg="#b91c1c",
+    ).pack(anchor="w")
     e_projekt = tk.Entry(f_projekt, font=("Segoe UI", 10), bd=1, relief="solid")
-    e_projekt.insert(0, "2334444")
     e_projekt.pack(fill="x", ipady=4, pady=(3, 0))
 
-    # Wiersz 3: Opis Zgłoszenia 
+    # Wiersz 3: Opis Zgłoszenia
     row3 = tk.Frame(card2_body, bg="#ffffff")
     row3.pack(fill="x", pady=(0, 10))
-    tk.Label(row3, text="OPIS ZGŁOSZENIA *", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#b91c1c").pack(anchor="w")
-    txt_opis = tk.Text(row3, font=("Segoe UI", 10), height=3, bd=1, relief="solid")
-    txt_opis.insert("1.0", "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.")
+    tk.Label(
+        row3,
+        text="OPIS ZGŁOSZENIA *",
+        font=("Segoe UI", 8, "bold"),
+        bg="#ffffff",
+        fg="#b91c1c",
+    ).pack(anchor="w")
+    txt_opis = tk.Text(
+        row3, font=("Segoe UI", 10), height=3, bd=1, relief="solid"
+    )
     txt_opis.pack(fill="x", pady=(3, 0))
 
     # Wiersz 4: Dyrektor Obszaru
     row4 = tk.Frame(card2_body, bg="#ffffff")
     row4.pack(fill="x", pady=(0, 15))
-    tk.Label(row4, text="DYREKTOR OBSZARU *", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#b91c1c").pack(anchor="w")
-    combo_dyrektor = ttk.Combobox(row4, values=["Anna Kowalska", "Marek Nowak", "Piotr Wiśniewski"], font=("Segoe UI", 10))
-    combo_dyrektor.set("Anna Kowalska")
+    tk.Label(
+        row4,
+        text="DYREKTOR OBSZARU *",
+        font=("Segoe UI", 8, "bold"),
+        bg="#ffffff",
+        fg="#b91c1c",
+    ).pack(anchor="w")
+
+    dyrektorzy = ["Anna Kowalska", "Marek Nowak", "Piotr Wiśniewski"]
+    combo_dyrektor = ttk.Combobox(
+        row4, values=dyrektorzy, font=("Segoe UI", 10), state="readonly"
+    )
+    combo_dyrektor.set("Wybierz dyrektora")
     combo_dyrektor.pack(fill="x", ipady=3, pady=(3, 0))
-    tk.Label(row4, text="Zgłoszenie trafi do wskazanego dyrektora", font=("Segoe UI", 8), bg="#ffffff", fg="#94a3b8").pack(anchor="w", pady=(2, 0))
+    tk.Label(
+        row4,
+        text="Zgłoszenie trafi do wskazanego dyrektora",
+        font=("Segoe UI", 8),
+        bg="#ffffff",
+        fg="#94a3b8",
+    ).pack(anchor="w", pady=(2, 0))
 
     # Wiersz 5: Załączniki
     row5 = tk.Frame(card2_body, bg="#ffffff")
     row5.pack(fill="x", pady=(0, 15))
-    tk.Label(row5, text="ZAŁĄCZNIKI", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b").pack(anchor="w")
+    tk.Label(
+        row5,
+        text="ZAŁĄCZNIKI",
+        font=("Segoe UI", 8, "bold"),
+        bg="#ffffff",
+        fg="#64748b",
+    ).pack(anchor="w")
 
     zalaczniki_frame = tk.Frame(row5, bg="#ffffff")
     zalaczniki_frame.pack(fill="x", pady=(3, 5))
@@ -174,7 +276,7 @@ def otworzFormularzDodawania(parent_window, callback_odswiez=None):
         padx=10,
         pady=4,
         cursor="hand2",
-        command=dodajPliki
+        command=dodajPliki,
     )
     btn_dodaj_plik.pack(anchor="w", pady=(2, 0))
 
@@ -182,8 +284,14 @@ def otworzFormularzDodawania(parent_window, callback_odswiez=None):
         klient = e_klient.get().strip()
         nr_projektu = e_projekt.get().strip()
         opis = txt_opis.get("1.0", tk.END).strip()
+        dyrektor = combo_dyrektor.get()
 
-        if not klient or not nr_projektu or not opis:
+        if (
+            not klient
+            or not nr_projektu
+            or not opis
+            or dyrektor == "Wybierz dyrektora"
+        ):
             messagebox.showwarning(
                 "Brakujące dane!",
                 "Wypełnij wszystkie pola oznaczone gwiazdką (*)! ",
@@ -191,22 +299,43 @@ def otworzFormularzDodawania(parent_window, callback_odswiez=None):
             )
             return
 
+        # 1. Zapis do bazy danych
         nowe = {
+            "nr_rek": nastepny_nr_rek,
             "data_zgl": e_data.get().strip(),
             "klient": klient,
             "nr_projektu": nr_projektu,
             "opis": opis,
             "pracujesz_jako": combo_rola.get(),
             "osoba_rejestrujaca": e_osoba.get().strip(),
-            "dyrektor": combo_dyrektor.get(),
+            "dyrektor": dyrektor,
             "odpowiedzialny": "—",
             "status": "NOWE",
         }
 
         dodajReklamacje(nowe, wybrane_zalaczniki)
 
+        # 2. Wysyłka maila do dyrektora w tle
+        email_dyrektora = MAILE_DYREKTOROW.get(
+            dyrektor, "kamilgraczyk1@gmail.com"
+        )
+
+        threading.Thread(
+            target=wyslijMaila,
+            kwargs={
+                "odbiorca_email": email_dyrektora,
+                "nr_rek": nastepny_nr_rek,
+                "klient": klient,
+                "nr_projektu": nr_projektu,
+                "opis": opis,
+            },
+            daemon=True,
+        ).start()
+
         messagebox.showinfo(
-            "Sukces", "Pomyślnie dodano zgłoszenie!", parent=form_window
+            "Sukces",
+            f"Pomyślnie dodano zgłoszenie {nastepny_nr_rek} oraz wysłano powiadomienie e-mail!",
+            parent=form_window,
         )
 
         if callable(callback_odswiez):
@@ -214,10 +343,18 @@ def otworzFormularzDodawania(parent_window, callback_odswiez=None):
 
         form_window.destroy()
 
-
-
-    btn_send = tk.Button(card2_body, text="✉ Wyślij do dyrektora", font=("Segoe UI", 10, "bold"),
-                         bg="#1f4e5b", fg="white", activebackground="#2d6a78", activeforeground="white",
-                         bd=0, padx=15, pady=8, cursor="hand2", command=obsluzZapis)
+    btn_send = tk.Button(
+        card2_body,
+        text="✉ Wyślij do dyrektora",
+        font=("Segoe UI", 10, "bold"),
+        bg="#1f4e5b",
+        fg="white",
+        activebackground="#2d6a78",
+        activeforeground="white",
+        bd=0,
+        padx=15,
+        pady=8,
+        cursor="hand2",
+        command=obsluzZapis,
+    )
     btn_send.pack(anchor="w", pady=(10, 0))
-

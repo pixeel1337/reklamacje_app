@@ -2,8 +2,7 @@
 /__pycache__
 /.vscode
 /venv
-/Reklamacje_Dane
 
 #pliki
 .env
-reklamacje.json
+*.json

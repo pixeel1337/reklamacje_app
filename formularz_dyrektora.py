@@ -16,7 +16,7 @@ def otworzPanelDyrektora(parent_window):
     top_bar.pack(fill="x")
 
     btn_back = tk.Button(top_bar, text="← Wróć do rejestru", font=("Segoe UI", 10, "bold"),
-                         bg="#f4f1ea", fg="#1f4e5b", bd=0, cursor="hand2")
+                         bg="#f4f1ea", fg="#1f4e5b", bd=0, cursor="hand2", command=dir_window.destroy)
     btn_back.pack(side="left")
 
     badge_frame = tk.Frame(top_bar, bg="#f4f1ea")

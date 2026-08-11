@@ -4,21 +4,38 @@ from formularz import otworzFormularzDodawania
 from baza import wczytajDane
 
 
-def odswiezTabele(tree):
+def odswiezWszystko(tree, sub_lbl, kpi_labels, btn_all, btn_open):
     for item in tree.get_children():
         tree.delete(item)
 
     dane = wczytajDane()
+    
+    total_count = len(dane)
+    open_count = sum(1 for r in dane if r.get("status") in ["NOWE", "W TRAKCIE", "CZEKA NA ZAMKNIĘCIE"])
+    sys_2026_count = sum(1 for r in dane if r.get("typ_niezgodnosci") == "Systemowa")
+    uznane_count = sum(1 for r in dane if r.get("status") == "UZNANE GWARANCYJNIE")
+    nieuznane_count = sum(1 for r in dane if r.get("status") == "NIEUZNANE GWARANCYJNIE")
+
+    sub_lbl.config(text=f"{open_count} zgłoszeń aktywnych")
+
+    kpi_labels[0].config(text=str(open_count))
+    kpi_labels[1].config(text=str(sys_2026_count))
+    kpi_labels[2].config(text=str(uznane_count))
+    kpi_labels[3].config(text=str(nieuznane_count))
+
+    btn_all.config(text=f"Cały rejestr ({total_count})")
+    btn_open.config(text=f"Otwarte zgłoszenia ({open_count})")
+
     for r in dane:
         wiersz = (
             f"#{r.get('id', 0):03d}",
             r.get("nr_rek", "—"),
             r.get("data_zgl", "—"),
             r.get("klient", "—"),
-            r.get("nr_projektu", "—"),
+            r.get("nr_zadania", r.get("nr_projektu", "—")),
             r.get("nazwa_zadania", "—"),
             r.get("forma", "—"),
-            r.get("odpowiedzialny", "—"),
+            r.get("odpowiedzialny", r.get("osoba_rejestrujaca", "—")),
             r.get("data_zak", "—"),
             r.get("uwagi", "—"),
             r.get("typ_niezgodnosci", "—"),
@@ -50,7 +67,6 @@ def stworzRejestrZgloszen():
               background=[("selected", "#cbd5e1")],
               foreground=[("selected", "#0f172a")])
 
-
     header_frame = tk.Frame(root, bg="#eef2f5", padx=20, pady=15)
     header_frame.pack(fill="x")
 
@@ -60,27 +76,29 @@ def stworzRejestrZgloszen():
     title_lbl = tk.Label(title_box, text="Rejestr Zgłoszeń Reklamacyjnych", font=("Segoe UI", 16, "bold"), bg="#eef2f5", fg="#0f172a")
     title_lbl.pack(anchor="w")
 
-    sub_lbl = tk.Label(title_box, text="7 zgłoszeń aktywnych", font=("Segoe UI", 9), bg="#eef2f5", fg="#64748b")
+    # dynamiczna etykieta podtytułu
+    sub_lbl = tk.Label(title_box, text="0 zgłoszeń aktywnych", font=("Segoe UI", 9), bg="#eef2f5", fg="#64748b")
     sub_lbl.pack(anchor="w")
 
     btn_add = tk.Button(header_frame, text="+ Dodaj nowe zgłoszenie", font=("Segoe UI", 9, "bold"), bg="#1f4e5b", fg="white",
-                    activebackground="#2d6a78", activeforeground="white",
-                    bd=0, padx=16, pady=8, cursor="hand2", 
-                    command=lambda: otworzFormularzDodawania(root, lambda: odswiezTabele(tree)))
+                        activebackground="#2d6a78", activeforeground="white",
+                        bd=0, padx=16, pady=8, cursor="hand2", 
+                        command=lambda: otworzFormularzDodawania(root, lambda: odswiezWszystko(tree, sub_lbl, kpi_labels, btn_all, btn_open)))
     btn_add.pack(side="right")
 
     kpi_frame = tk.Frame(root, bg="#eef2f5", padx=20)
     kpi_frame.pack(fill="x", pady=(0, 15))
 
     cards_data = [
-        ("CZEKA NA ZAMKNIĘCIE", "3", "wszystkie otwarte, bez względu na rok", "#d97706"),
-        ("ZGŁOSZENIA SYSTEMOWE (2026)", "2", "niezgodność typu systemowego", "#475569"),
-        ("UZNANE GWARANCYJNIE (2026)", "2", "zamknięte z decyzją pozytywną", "#16a34a"),
-        ("NIEUZNANE GWARANCYJNIE (2026)", "1", "zamknięte z decyzją negatywną", "#dc2626"),
+        ("CZEKA NA ZAMKNIĘCIE", "wszystkie otwarte, bez względu na rok", "#d97706"),
+        ("ZGŁOSZENIA SYSTEMOWE (2026)", "niezgodność typu systemowego", "#475569"),
+        ("UZNANE GWARANCYJNIE (2026)", "zamknięte z decyzją pozytywną", "#16a34a"),
+        ("NIEUZNANE GWARANCYJNIE (2026)", "zamknięte z decyzją negatywną", "#dc2626"),
     ]
 
+    kpi_labels = []
 
-    for i, (title, val, desc, color) in enumerate(cards_data):
+    for i, (title, desc, color) in enumerate(cards_data):
         kpi_frame.columnconfigure(i, weight=1, uniform="kpi")
 
         card = tk.Frame(kpi_frame, bg=color, height=4)
@@ -93,9 +111,12 @@ def stworzRejestrZgloszen():
         body.pack(fill="both", expand=True)
 
         tk.Label(body, text=title, font=("Segoe UI", 7, "bold"), bg="#ffffff", fg="#475569", anchor="w").pack(anchor="w")
-        tk.Label(body, text=val, font=("Segoe UI", 18, "bold"), bg="#ffffff", fg="#0f172a", anchor="w").pack(anchor="w", pady=(2, 2))
-        tk.Label(body, text=desc, font=("Segoe UI", 7), bg="#ffffff", fg="#64748b", anchor="w").pack(anchor="w")
+        
+        val_lbl = tk.Label(body, text="0", font=("Segoe UI", 18, "bold"), bg="#ffffff", fg="#0f172a", anchor="w")
+        val_lbl.pack(anchor="w", pady=(2, 2))
+        kpi_labels.append(val_lbl)
 
+        tk.Label(body, text=desc, font=("Segoe UI", 7), bg="#ffffff", fg="#64748b", anchor="w").pack(anchor="w")
 
     toolbar = tk.Frame(root, bg="#eef2f5")
     toolbar.pack(fill="x", pady=(0, 10))
@@ -103,11 +124,11 @@ def stworzRejestrZgloszen():
     tabs_frame = tk.Frame(toolbar, bg="#eef2f5")
     tabs_frame.pack(side="left")
 
-    btn_all = tk.Button(tabs_frame, text="Cały rejestr (7)", font=("Segoe UI", 9, "bold"),
+    btn_all = tk.Button(tabs_frame, text="Cały rejestr (0)", font=("Segoe UI", 9, "bold"),
                         bg="#1f4e5b", fg="white", bd=0, padx=14, pady=6)
     btn_all.pack(side="left", padx=(0, 6))
 
-    btn_open = tk.Button(tabs_frame, text="Otwarte zgłoszenia (3)", font=("Segoe UI", 9, "bold"),
+    btn_open = tk.Button(tabs_frame, text="Otwarte zgłoszenia (0)", font=("Segoe UI", 9, "bold"),
                          bg="#ffffff", fg="#475569", bd=1, relief="solid", highlightthickness=0, padx=14, pady=5)
     btn_open.pack(side="left")
 
@@ -117,7 +138,6 @@ def stworzRejestrZgloszen():
     search_entry = tk.Entry(search_frame, font=("Segoe UI", 9), width=35, relief="solid", bd=1, fg="#64748b")
     search_entry.insert(0, "Szukaj: klient, nr reklamacji, nr zadania...")
     search_entry.pack(side="right")
-
 
     table_container = tk.Frame(root, bg="#ffffff")
     table_container.pack(fill="both", expand=True, padx=20, pady=(0, 20))
@@ -129,7 +149,6 @@ def stworzRejestrZgloszen():
     )
 
     tree = ttk.Treeview(table_container, columns=columns, show="headings", style="Custom.Treeview")
-
 
     headings = [
         ("lp", "LP", 45, "center"),
@@ -161,7 +180,7 @@ def stworzRejestrZgloszen():
     table_container.grid_rowconfigure(0, weight=1)
     table_container.grid_columnconfigure(0, weight=1)
 
-    odswiezTabele(tree)
+    odswiezWszystko(tree, sub_lbl, kpi_labels, btn_all, btn_open)
     root.mainloop()
 
 
