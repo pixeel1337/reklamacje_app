@@ -6,8 +6,7 @@ from baza import wczytajDane, zapiszDane
 from generuj_json import generujJSON
 from generuj_pdf import generujPdf
 
-# Opcjonalnie zaimportuj swój skrypt do maili:
-# from wyslij_email import wyslij_powiadomienie_email
+from obsluga_maili import wyslijMaila
 
 
 def otworzPanelDyrektora(
@@ -357,7 +356,7 @@ def otworzPanelDyrektora(
     btn_next.config(command=lambda: pokaz_karty("pass"))
     btn_reject.config(command=lambda: pokaz_karty("reject"))
 
-    # FUNKCJA ŁADOWANIA DANYCH PO NUMERZE Z POLA e_szukaj_nr
+    # FUNKCJA ŁADOWANIA DANYCH PO NUMERZE Z POLA e_szukaj_n r
     def wczytaj_dane():
         nonlocal aktualna_reklamacja
         nr_szukany = e_szukaj_nr.get().strip().upper().replace("_", "/")
@@ -413,12 +412,18 @@ def otworzPanelDyrektora(
         dyrektor = combo_role2.get()
 
         dane_all = wczytajDane()
+        klient_nazwa = ""
+        nr_zadania_val = ""
+
         for r in dane_all:
             nr_db = r.get("nr_rek", "").strip().upper().replace("_", "/")
             if nr_db == nr_szukany:
                 r["status"] = "W TRAKCIE"
                 r["odpowiedzialny"] = wybrany_pracownik
                 r["dyrektor"] = dyrektor
+                
+                klient_nazwa = r.get("klient", "")
+                nr_zadania_val = r.get("nr_zadania", "")
 
                 # Regeneracja PDF i JSON w folderze Reklamacje_Dane
                 try:
@@ -441,6 +446,25 @@ def otworzPanelDyrektora(
                 break
 
         zapiszDane(dane_all)
+
+        # WYSYŁKA MAILADO PRACOWNIKA
+        try:
+            wyslijMaila(
+                odbiorca=wybrany_pracownik,
+                nr_rek=nr_szukany,
+                klient=klient_nazwa,
+                nr_projektu=nr_zadania_val
+            )
+        except Exception as e:
+            print(f"[BŁĄD WYSYŁKI E-MAIL]: {e}")
+
+        messagebox.showinfo(
+            "Sukces",
+            f"Zgłoszenie {nr_szukany} zostało przekazane do: {wybrany_pracownik}.\nStatus zmieniony na W TRAKCIE, a e-mail został wysłany.",
+        )
+        if odswiez_callback:
+            odswiez_callback()
+        dir_window.destroy()
 
         # MIEJSCE NA WYSYŁKĘ E-MAILA DO PRACOWNIKA:
         # wyslij_powiadomienie_email(odbiorca=wybrany_pracownik, nr_rek=nr_szukany)
