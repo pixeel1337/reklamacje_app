@@ -6,3 +6,6 @@
 #pliki
 .env
 *.json
+*.exe
+.DS_Store
+*.pyc

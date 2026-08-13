@@ -90,4 +90,4 @@ def dodajReklamacje(nowe_zgloszenie, lista_zalacznikow_sciezki):
     nowe_zgloszenie["zalaczniki"] = sciezki_zalacznikow
 
     reklamacje.append(nowe_zgloszenie)
-    zapiszReklamacje(reklamacje)
+    zapiszDane(reklamacje)
