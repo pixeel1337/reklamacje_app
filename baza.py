@@ -25,7 +25,7 @@ def wczytajDane():
             return []
 
 
-def zapiszReklamacje(dane):
+def zapiszDane(dane):
     with open(DATABASE, "w", encoding="utf-8") as f:
         json.dump(dane, f, indent=2, ensure_ascii=False)
 
