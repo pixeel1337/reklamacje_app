@@ -1,12 +1,22 @@
-import os
+import threading
 import tkinter as tk
 from tkinter import messagebox, ttk
 
-from baza import wczytajDane, zapiszDane
-from generuj_json import generujJSON
-from generuj_pdf import generujPdf
+from baza import aktualizujReklamacje, pobierzReklamacjePoNumerze
+from obsluga_maili import MAPA_EMAILI, wyslijMaila
 
-from obsluga_maili import wyslijMaila
+PRACOWNICY = (
+    list(MAPA_EMAILI.keys())
+    if MAPA_EMAILI
+    else [
+        "Marek Zieliński",
+        "Piotr Kowalski",
+        "Marta Wiśniewska",
+        "Jan Kowalski",
+        "Anna Nowak",
+    ]
+)
+DYREKTORZY = ["Anna Kowalska", "Marek Nowak", "Piotr Wiśniewski"]
 
 
 def otworzPanelDyrektora(
@@ -22,7 +32,7 @@ def otworzPanelDyrektora(
 
     aktualna_reklamacja = {}
 
-    # Pasek górny Z POLEM WYSZUKIWANIA (jak w panelu pracownika)
+    # --- TOP BAR ---
     top_bar = tk.Frame(dir_window, bg="#f4f1ea", padx=20, pady=15)
     top_bar.pack(fill="x")
 
@@ -83,7 +93,7 @@ def otworzPanelDyrektora(
     content_frame = tk.Frame(dir_window, bg="#f4f1ea", padx=20)
     content_frame.pack(fill="both", expand=True)
 
-    # Sekcja: Role
+    # --- SEKCJA: ROLE ---
     sec_roles = tk.Frame(content_frame, bg="#f8f6f0", bd=1, relief="solid")
     sec_roles.pack(fill="x", pady=(0, 15))
 
@@ -121,14 +131,14 @@ def otworzPanelDyrektora(
     ).pack(anchor="w")
     combo_role2 = ttk.Combobox(
         f_role2,
-        values=["Anna Kowalska", "Marek Nowak", "Piotr Wiśniewski"],
+        values=DYREKTORZY,
         state="readonly",
         font=("Segoe UI", 10),
     )
-    combo_role2.set("Anna Kowalska")
+    combo_role2.set(DYREKTORZY[0])
     combo_role2.pack(fill="x", pady=(4, 0), ipady=3)
 
-    # Sekcja: Rejestracja Zgłoszenia
+    # --- SEKCJA: PODGLĄD ZGŁOSZENIA ---
     sec1_card = tk.Frame(content_frame, bg="#f8fafc", bd=1, relief="solid")
     sec1_card.pack(fill="x", pady=(0, 15))
 
@@ -196,7 +206,7 @@ def otworzPanelDyrektora(
     )
     e_projekt.pack(fill="x", ipady=4, pady=(2, 0))
 
-    # Sekcja: Decyzja Dyrektora
+    # --- SEKCJA: DECYZJA DYREKTORA ---
     sec2_card = tk.Frame(content_frame, bg="#ffffff", bd=1, relief="solid")
     sec2_card.pack(fill="both", expand=True, pady=(0, 20))
 
@@ -210,9 +220,10 @@ def otworzPanelDyrektora(
         bg="#ffffff",
         fg="#0f172a",
     ).pack(anchor="w", pady=(0, 10))
+
     lbl_dyrektor_name = tk.Label(
         card2_body,
-        text="Dyrektor obszaru: Anna Kowalska",
+        text=f"Dyrektor obszaru: {combo_role2.get()}",
         font=("Segoe UI", 9, "bold"),
         bg="#ffffff",
         fg="#334155",
@@ -220,13 +231,11 @@ def otworzPanelDyrektora(
     lbl_dyrektor_name.pack(anchor="w", pady=(0, 12))
 
     def zaktualizuj_dyrektora(e=None):
-        lbl_dyrektor_name.config(
-            text=f"Dyrektor obszaru: {combo_role2.get()}"
-        )
+        lbl_dyrektor_name.config(text=f"Dyrektor obszaru: {combo_role2.get()}")
 
     combo_role2.bind("<<ComboboxSelected>>", zaktualizuj_dyrektora)
 
-    # Przyciski akcji
+    # Przyciski wyboru akcji
     dec_btns_frame = tk.Frame(card2_body, bg="#ffffff")
     dec_btns_frame.pack(anchor="w", pady=(0, 15))
 
@@ -262,9 +271,8 @@ def otworzPanelDyrektora(
     )
     btn_next.pack(side="left")
 
-    # Dynamiczna karta 1: Przesłanie do osoby
+    # Karta akcji: Przekazanie
     sub_card_pass = tk.Frame(card2_body, bg="#f8f6f0", bd=1, relief="solid")
-
     sub_body_pass = tk.Frame(sub_card_pass, bg="#f8f6f0", padx=15, pady=15)
     sub_body_pass.pack(fill="x")
 
@@ -278,17 +286,11 @@ def otworzPanelDyrektora(
 
     combo_resp = ttk.Combobox(
         sub_body_pass,
-        values=[
-            "Marek Zieliński",
-            "Piotr Kowalski",
-            "Marta Wiśniewska",
-            "Jan Kowalski",
-            "Anna Nowak",
-        ],
+        values=PRACOWNICY,
         state="readonly",
         font=("Segoe UI", 10),
     )
-    combo_resp.set("Marek Zieliński")
+    combo_resp.set(PRACOWNICY[0])
     combo_resp.pack(fill="x", ipady=3, pady=(5, 15))
 
     btn_confirm = tk.Button(
@@ -306,9 +308,8 @@ def otworzPanelDyrektora(
     )
     btn_confirm.pack(anchor="w")
 
-    # Dynamiczna karta 2: Odrzucenie
+    # Karta akcji: Odrzucenie
     sub_card_reject = tk.Frame(card2_body, bg="#fef2f2", bd=1, relief="solid")
-
     sub_body_reject = tk.Frame(sub_card_reject, bg="#fef2f2", padx=15, pady=15)
     sub_body_reject.pack(fill="x")
 
@@ -340,7 +341,6 @@ def otworzPanelDyrektora(
     )
     btn_confirm_reject.pack(anchor="w")
 
-    # Przełączanie widoków akcji
     def pokaz_karty(tryb):
         if tryb == "pass":
             sub_card_reject.pack_forget()
@@ -356,19 +356,12 @@ def otworzPanelDyrektora(
     btn_next.config(command=lambda: pokaz_karty("pass"))
     btn_reject.config(command=lambda: pokaz_karty("reject"))
 
-    # FUNKCJA ŁADOWANIA DANYCH PO NUMERZE Z POLA e_szukaj_n r
+    # --- ŁADOWANIE DANYCH ---
     def wczytaj_dane():
         nonlocal aktualna_reklamacja
         nr_szukany = e_szukaj_nr.get().strip().upper().replace("_", "/")
 
-        dane = wczytajDane()
-        znaleziona = None
-        for r in dane:
-            nr_db = r.get("nr_rek", "").strip().upper().replace("_", "/")
-            if nr_db == nr_szukany:
-                znaleziona = r
-                break
-
+        znaleziona = pobierzReklamacjePoNumerze(nr_szukany)
         if not znaleziona:
             messagebox.showwarning(
                 "Nie znaleziono",
@@ -388,10 +381,10 @@ def otworzPanelDyrektora(
 
         e_projekt.configure(state="normal")
         e_projekt.delete(0, "end")
-        e_projekt.insert(0, znaleziona.get("nr_zadania", ""))
+        e_projekt.insert(0, znaleziona.get("nr_projektu") or znaleziona.get("nr_zadania", ""))
         e_projekt.configure(state="disabled")
 
-        if znaleziona.get("odpowiedzialny"):
+        if znaleziona.get("odpowiedzialny") in PRACOWNICY:
             combo_resp.set(znaleziona.get("odpowiedzialny"))
 
         txt_powod.delete("1.0", "end")
@@ -399,11 +392,11 @@ def otworzPanelDyrektora(
 
     btn_laduj.config(command=wczytaj_dane)
 
-    # Zapis przekazania
+    # --- ZAPIS PRZEKAZANIA ---
     def potwierdz_przekazanie():
         if not aktualna_reklamacja:
             messagebox.showwarning(
-                "Brak danych", "Najpierw wczytaj zgłoszenie przyciskiem 'Wczytaj'!"
+                "Brak danych", "Najpierw wczytaj zgłoszenie przyciskiem '🔍 Wczytaj'!"
             )
             return
 
@@ -411,77 +404,49 @@ def otworzPanelDyrektora(
         wybrany_pracownik = combo_resp.get()
         dyrektor = combo_role2.get()
 
-        dane_all = wczytajDane()
-        klient_nazwa = ""
-        nr_zadania_val = ""
+        dane_aktualizacji = {
+            "status": "W TRAKCIE",
+            "odpowiedzialny": wybrany_pracownik,
+            "dyrektor": dyrektor,
+        }
 
-        for r in dane_all:
-            nr_db = r.get("nr_rek", "").strip().upper().replace("_", "/")
-            if nr_db == nr_szukany:
-                r["status"] = "W TRAKCIE"
-                r["odpowiedzialny"] = wybrany_pracownik
-                r["dyrektor"] = dyrektor
-                
-                klient_nazwa = r.get("klient", "")
-                nr_zadania_val = r.get("nr_zadania", "")
+        # Aktualizacja bazy + regeneracja plików PDF/JSON
+        wynik = aktualizujReklamacje(nr_szukany, dane_aktualizacji, regeneruj_pliki=True)
+        if not wynik:
+            messagebox.showerror("Błąd", f"Nie udało się zaktualizować zgłoszenia {nr_szukany}.")
+            return
 
-                # Regeneracja PDF i JSON w folderze Reklamacje_Dane
-                try:
-                    folder_projektu = os.path.dirname(
-                        os.path.abspath(__file__)
-                    )
-                    nazwa_folderu = nr_db.replace("/", "_")
-                    folder_docelowy = os.path.join(
-                        folder_projektu, "Reklamacje_Dane", nazwa_folderu
-                    )
+        klient_nazwa = wynik.get("klient", "")
+        nr_proj = wynik.get("nr_projektu") or wynik.get("nr_zadania", "")
+        opis_val = wynik.get("opis", "")
 
-                    if os.path.exists(folder_docelowy):
-                        generujPdf(folder_docelowy, r, nr_db, folder_projektu)
-                        generujJSON(
-                            folder_docelowy, r, nazwa_folderu, folder_projektu
-                        )
-                except Exception as ex:
-                    print(f"[BŁĄD GENEROWANIA PLIKÓW]: {ex}")
-
-                break
-
-        zapiszDane(dane_all)
-
-        # WYSYŁKA MAILADO PRACOWNIKA
-        try:
-            wyslijMaila(
-                odbiorca=wybrany_pracownik,
-                nr_rek=nr_szukany,
-                klient=klient_nazwa,
-                nr_projektu=nr_zadania_val
-            )
-        except Exception as e:
-            print(f"[BŁĄD WYSYŁKI E-MAIL]: {e}")
+        # Wysyłka maila w osobnym wątku
+        threading.Thread(
+            target=wyslijMaila,
+            kwargs={
+                "odbiorca": wybrany_pracownik,
+                "nr_rek": nr_szukany,
+                "klient": klient_nazwa,
+                "nr_projektu": nr_proj,
+                "opis": opis_val,
+                "typ": "pracownik",
+            },
+            daemon=True,
+        ).start()
 
         messagebox.showinfo(
             "Sukces",
-            f"Zgłoszenie {nr_szukany} zostało przekazane do: {wybrany_pracownik}.\nStatus zmieniony na W TRAKCIE, a e-mail został wysłany.",
+            f"Zgłoszenie {nr_szukany} zostało przekazane do: {wybrany_pracownik}.\nStatus zmieniony na W TRAKCIE, a powiadomienie e-mail zostało wysłane.",
         )
         if odswiez_callback:
             odswiez_callback()
         dir_window.destroy()
 
-        # MIEJSCE NA WYSYŁKĘ E-MAILA DO PRACOWNIKA:
-        # wyslij_powiadomienie_email(odbiorca=wybrany_pracownik, nr_rek=nr_szukany)
-
-        messagebox.showinfo(
-            "Sukces",
-            f"Zgłoszenie {nr_szukany} zostało przekazane do: {wybrany_pracownik}.\nStatus zmieniony na W TRAKCIE.",
-        )
-        if odswiez_callback:
-            odswiez_callback()
-        dir_window.destroy()
-
-    # Zapis odrzucenia
+    # --- ZAPIS ODRZUCENIA ---
     def potwierdz_odrzucenie():
         if not aktualna_reklamacja:
             messagebox.showwarning(
-                "Brak danych", "Najpierw wczytaj zgłoszenie przyciskiem 'Wczytaj'!"
+                "Brak danych", "Najpierw wczytaj zgłoszenie przyciskiem '🔍 Wczytaj'!"
             )
             return
 
@@ -495,34 +460,16 @@ def otworzPanelDyrektora(
         nr_szukany = e_szukaj_nr.get().strip().upper().replace("_", "/")
         dyrektor = combo_role2.get()
 
-        dane_all = wczytajDane()
-        for r in dane_all:
-            nr_db = r.get("nr_rek", "").strip().upper().replace("_", "/")
-            if nr_db == nr_szukany:
-                r["status"] = "ODRZUCONE"
-                r["powod_odrzucenia"] = powod_val
-                r["dyrektor"] = dyrektor
+        dane_aktualizacji = {
+            "status": "ODRZUCONE",
+            "powod_odrzucenia": powod_val,
+            "dyrektor": dyrektor,
+        }
 
-                try:
-                    folder_projektu = os.path.dirname(
-                        os.path.abspath(__file__)
-                    )
-                    nazwa_folderu = nr_db.replace("/", "_")
-                    folder_docelowy = os.path.join(
-                        folder_projektu, "Reklamacje_Dane", nazwa_folderu
-                    )
-
-                    if os.path.exists(folder_docelowy):
-                        generujPdf(folder_docelowy, r, nr_db, folder_projektu)
-                        generujJSON(
-                            folder_docelowy, r, nazwa_folderu, folder_projektu
-                        )
-                except Exception as ex:
-                    print(f"[BŁĄD GENEROWANIA PLIKÓW]: {ex}")
-
-                break
-
-        zapiszDane(dane_all)
+        wynik = aktualizujReklamacje(nr_szukany, dane_aktualizacji, regeneruj_pliki=True)
+        if not wynik:
+            messagebox.showerror("Błąd", f"Nie udało się odrzucić zgłoszenia {nr_szukany}.")
+            return
 
         messagebox.showinfo(
             "Odrzucono", f"Zgłoszenie {nr_szukany} zostało odrzucone."
@@ -534,7 +481,6 @@ def otworzPanelDyrektora(
     btn_confirm.config(command=potwierdz_przekazanie)
     btn_confirm_reject.config(command=potwierdz_odrzucenie)
 
-    # Domyślnie otwieramy kartę przesłania dalej i wczytujemy dane
     pokaz_karty("pass")
     wczytaj_dane()
 
@@ -543,10 +489,5 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.title("Testowanie widoku")
     root.geometry("300x100")
-
-    label = tk.Label(root, text="Okno główne w tle (nie zamykaj)")
-    label.pack(expand=True)
-
     otworzPanelDyrektora(root, "ZG/2026/001")
-
     root.mainloop()

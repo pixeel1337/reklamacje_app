@@ -1,10 +1,11 @@
-import os
+import datetime
 import tkinter as tk
 from tkinter import messagebox, ttk
 
-from baza import wczytajDane, zapiszDane
-from generuj_json import generujJSON
-from generuj_pdf import generujPdf
+from baza import aktualizujReklamacje, pobierzReklamacjePoNumerze
+from obsluga_maili import MAPA_EMAILI
+
+PRACOWNICY = list(MAPA_EMAILI.keys()) if MAPA_EMAILI else ["Marek Zieliński", "Piotr Kowalski", "Marta Wiśniewska", "Jan Kowalski", "Anna Nowak"]
 
 
 def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_callback=None):
@@ -17,8 +18,9 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
     win.grab_set()
 
     aktualna_reklamacja = {}
+    dzisiaj = datetime.date.today().strftime("%d.%m.%Y")
 
-    # TOP BAR z polem wyszukiwania numeru
+    # --- TOP BAR ---
     top_bar = tk.Frame(win, bg="#f4f1ea", padx=20, pady=15)
     top_bar.pack(fill="x")
 
@@ -76,7 +78,7 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
     lbl_status_badge.pack(side="right", padx=(5, 0))
     btn_laduj.pack(side="right")
 
-    # Canvas ze scrollem
+    # --- CANVAS ZE SCROLLEM ---
     canvas = tk.Canvas(win, bg="#f4f1ea", highlightthickness=0)
     scrollbar = ttk.Scrollbar(win, orient="vertical", command=canvas.yview)
     scroll_frame = tk.Frame(canvas, bg="#f4f1ea", padx=20)
@@ -92,8 +94,8 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
     canvas.pack(side="left", fill="both", expand=True)
     scrollbar.pack(side="right", fill="y")
 
-    # KAFELEK 1: Rola i użytkownik
-    sec1_card = tk.Frame(scroll_frame, bg="#f8f6f0", padx=15, pady=12)
+    # --- KAFELEK 1: ROLA I UŻYTKOWNIK ---
+    sec1_card = tk.Frame(scroll_frame, bg="#f8f6f0", bd=1, relief="solid")
     sec1_card.pack(fill="x", pady=(0, 15))
 
     card1_body = tk.Frame(sec1_card, bg="#f8f6f0", padx=15, pady=12)
@@ -113,7 +115,7 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
 
     combo_pracujesz = ttk.Combobox(
         f_rola,
-        values=["Osoba odpowiedzialna"],
+        values=["Osoba odpowiedzialna", "Serwisant", "Kierownik projektu"],
         state="readonly",
         font=("Segoe UI", 10),
     )
@@ -132,39 +134,38 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
 
     combo_zalogowany = ttk.Combobox(
         f_zalogowany,
-        values=["Marek Zieliński"],
+        values=PRACOWNICY,
         state="readonly",
         font=("Segoe UI", 10),
     )
-    combo_zalogowany.set("Marek Zieliński")
+    combo_zalogowany.set(PRACOWNICY[0])
     combo_zalogowany.pack(fill="x", pady=(3, 0), ipady=2)
 
-    # KAFELEK 2: REALIZACJA I ZAMKNIĘCIE
+    # --- KAFELEK 2: REALIZACJA I ZAMKNIĘCIE ---
     sec2_card = tk.Frame(scroll_frame, bg="#ffffff", bd=1, relief="solid")
     sec2_card.pack(fill="x", pady=(0, 20))
 
     card2_body = tk.Frame(sec2_card, bg="#ffffff", padx=20, pady=15)
     card2_body.pack(fill="x")
 
-    sec2_title = tk.Label(
+    tk.Label(
         card2_body,
         text="⚙ 3 · REALIZACJA I ZAMKNIĘCIE",
         font=("Segoe UI", 11, "bold"),
         bg="#ffffff",
         fg="#0f172a",
-    )
-    sec2_title.pack(anchor="w", pady=(0, 10))
+    ).pack(anchor="w", pady=(0, 5))
 
     lbl_osoba_odp = tk.Label(
         card2_body,
-        text="Osoba odpowiedzialna: Marek Zieliński",
+        text="Osoba odpowiedzialna: —",
         font=("Segoe UI", 9, "bold"),
         bg="#ffffff",
-        fg="#0f172a",
+        fg="#334155",
     )
-    lbl_osoba_odp.pack(anchor="w", pady=(0, 10))
+    lbl_osoba_odp.pack(anchor="w", pady=(0, 15))
 
-    # SPOSÓB ZAŁATWIENIA SPRAWY (Przyciskowy wybór)
+    # SPOSÓB ZAŁATWIENIA SPRAWY
     tk.Label(
         card2_body,
         text="SPOSÓB ZAŁATWIENIA SPRAWY *",
@@ -177,48 +178,15 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
     f_sposob_btn = tk.Frame(card2_body, bg="#ffffff")
     f_sposob_btn.pack(anchor="w", pady=(5, 15))
 
-    btn_uznano = tk.Button(
-        f_sposob_btn,
-        text="UZNANO",
-        font=("Segoe UI", 8, "bold"),
-        bd=1,
-        relief="solid",
-        padx=12,
-        pady=4,
-    )
-    btn_czesciowo = tk.Button(
-        f_sposob_btn,
-        text="UZNANO CZĘŚCIOWO",
-        font=("Segoe UI", 8, "bold"),
-        bd=1,
-        relief="solid",
-        padx=12,
-        pady=4,
-    )
-    btn_nieuznano = tk.Button(
-        f_sposob_btn,
-        text="NIE UZNANO",
-        font=("Segoe UI", 8, "bold"),
-        bd=1,
-        relief="solid",
-        padx=12,
-        pady=4,
-    )
+    btn_uznano = tk.Button(f_sposob_btn, text="UZNANO", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=12, pady=4)
+    btn_czesciowo = tk.Button(f_sposob_btn, text="UZNANO CZĘŚCIOWO", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=12, pady=4)
+    btn_nieuznano = tk.Button(f_sposob_btn, text="NIE UZNANO", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=12, pady=4)
 
     def ustaw_sposob(val):
         sposob_var.set(val)
-        btn_uznano.config(
-            bg="#b45309" if val == "UZNANO" else "#ffffff",
-            fg="white" if val == "UZNANO" else "#475569",
-        )
-        btn_czesciowo.config(
-            bg="#b45309" if val in ["UZNANO CZĘŚCIOWO", "UZNANO CZEŚCIOWO"] else "#ffffff",
-            fg="white" if val in ["UZNANO CZĘŚCIOWO", "UZNANO CZEŚCIOWO"] else "#475569",
-        )
-        btn_nieuznano.config(
-            bg="#b45309" if val == "NIE UZNANO" else "#ffffff",
-            fg="white" if val == "NIE UZNANO" else "#475569",
-        )
+        btn_uznano.config(bg="#1f4e5b" if val == "UZNANO" else "#ffffff", fg="white" if val == "UZNANO" else "#475569")
+        btn_czesciowo.config(bg="#1f4e5b" if val in ["UZNANO CZĘŚCIOWO", "UZNANO CZEŚCIOWO"] else "#ffffff", fg="white" if val in ["UZNANO CZĘŚCIOWO", "UZNANO CZEŚCIOWO"] else "#475569")
+        btn_nieuznano.config(bg="#b91c1c" if val == "NIE UZNANO" else "#ffffff", fg="white" if val == "NIE UZNANO" else "#475569")
 
     btn_uznano.config(command=lambda: ustaw_sposob("UZNANO"))
     btn_czesciowo.config(command=lambda: ustaw_sposob("UZNANO CZĘŚCIOWO"))
@@ -228,12 +196,11 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
     btn_czesciowo.pack(side="left", padx=(0, 10))
     btn_nieuznano.pack(side="left")
 
-    # SEKCJA TERMINÓW (OPCJONALNA Z CHECKBOXEM)
+    # SEKCJA TERMINÓW
     f_term_container = tk.Frame(card2_body, bg="#ffffff")
     f_term_container.pack(fill="x", pady=(0, 15))
 
     wydluzenie_var = tk.BooleanVar(value=False)
-
     chk_wydluzenie = tk.Checkbutton(
         f_term_container,
         text="Czy termin uległ wydłużeniu?",
@@ -247,10 +214,7 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
     )
     chk_wydluzenie.pack(anchor="w", pady=(0, 5))
 
-    f_termDateTime = tk.Frame(
-        f_term_container, bg="#f8fafc", bd=1, relief="solid", padx=12, pady=12
-    )
-
+    f_termDateTime = tk.Frame(f_term_container, bg="#f8fafc", bd=1, relief="solid", padx=12, pady=12)
     row_term = tk.Frame(f_termDateTime, bg="#f8fafc")
     row_term.pack(fill="x", pady=(0, 8))
     row_term.columnconfigure(0, weight=1)
@@ -258,38 +222,18 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
 
     f_t_std = tk.Frame(row_term, bg="#f8fafc")
     f_t_std.grid(row=0, column=0, sticky="ew", padx=(0, 10))
-    tk.Label(
-        f_t_std,
-        text="TERMIN STANDARDOWY",
-        font=("Segoe UI", 8, "bold"),
-        bg="#f8fafc",
-        fg="#64748b",
-    ).pack(anchor="w")
+    tk.Label(f_t_std, text="TERMIN STANDARDOWY", font=("Segoe UI", 8, "bold"), bg="#f8fafc", fg="#64748b").pack(anchor="w")
     e_term_std = tk.Entry(f_t_std, font=("Segoe UI", 10), bd=1, relief="solid")
     e_term_std.pack(fill="x", ipady=3, pady=(2, 0))
 
     f_t_akt = tk.Frame(row_term, bg="#f8fafc")
     f_t_akt.grid(row=0, column=1, sticky="ew")
-    tk.Label(
-        f_t_akt,
-        text="AKTUALNY TERMIN",
-        font=("Segoe UI", 8, "bold"),
-        bg="#f8fafc",
-        fg="#64748b",
-    ).pack(anchor="w")
+    tk.Label(f_t_akt, text="AKTUALNY TERMIN", font=("Segoe UI", 8, "bold"), bg="#f8fafc", fg="#64748b").pack(anchor="w")
     e_term_akt = tk.Entry(f_t_akt, font=("Segoe UI", 10), bd=1, relief="solid")
     e_term_akt.pack(fill="x", ipady=3, pady=(2, 0))
 
-    tk.Label(
-        f_termDateTime,
-        text="UZASADNIENIE WYDŁUŻENIA TERMINU *",
-        font=("Segoe UI", 8, "bold"),
-        bg="#f8fafc",
-        fg="#b91c1c",
-    ).pack(anchor="w", pady=(5, 0))
-    txt_uzasadnienie = tk.Text(
-        f_termDateTime, font=("Segoe UI", 9), height=2, bd=1, relief="solid"
-    )
+    tk.Label(f_termDateTime, text="UZASADNIENIE WYDŁUŻENIA TERMINU *", font=("Segoe UI", 8, "bold"), bg="#f8fafc", fg="#b91c1c").pack(anchor="w", pady=(5, 0))
+    txt_uzasadnienie = tk.Text(f_termDateTime, font=("Segoe UI", 9), height=2, bd=1, relief="solid")
     txt_uzasadnienie.pack(fill="x", pady=(2, 0))
 
     def przełącz_widok_terminu():
@@ -301,44 +245,26 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
     chk_wydluzenie.config(command=przełącz_widok_terminu)
 
     # PODWYKONAWCA
-    tk.Label(
-        card2_body,
-        text="CZY DOTYCZY PODWYKONAWCY?",
-        font=("Segoe UI", 8, "bold"),
-        bg="#ffffff",
-        fg="#64748b",
-    ).pack(anchor="w")
-    podwykonawca_var = tk.StringVar(value="TAK")
+    tk.Label(card2_body, text="CZY DOTYCZY PODWYKONAWCY?", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b").pack(anchor="w")
+    podwykonawca_var = tk.StringVar(value="NIE")
 
     f_podw_btn = tk.Frame(card2_body, bg="#ffffff")
     f_podw_btn.pack(anchor="w", pady=(3, 10))
 
-    btn_podw_tak = tk.Button(
-        f_podw_btn, text="TAK", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=14, pady=2
-    )
-    btn_podw_nie = tk.Button(
-        f_podw_btn, text="NIE", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=14, pady=2
-    )
+    btn_podw_tak = tk.Button(f_podw_btn, text="TAK", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=14, pady=2)
+    btn_podw_nie = tk.Button(f_podw_btn, text="NIE", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=14, pady=2)
 
     def ustaw_podw(val):
         podwykonawca_var.set(val)
-        btn_podw_tak.config(
-            bg="#1f4e5b" if val == "TAK" else "#ffffff",
-            fg="white" if val == "TAK" else "#475569",
-        )
-        btn_podw_nie.config(
-            bg="#1f4e5b" if val == "NIE" else "#ffffff",
-            fg="white" if val == "NIE" else "#475569",
-        )
+        btn_podw_tak.config(bg="#1f4e5b" if val == "TAK" else "#ffffff", fg="white" if val == "TAK" else "#475569")
+        btn_podw_nie.config(bg="#1f4e5b" if val == "NIE" else "#ffffff", fg="white" if val == "NIE" else "#475569")
 
     btn_podw_tak.config(command=lambda: ustaw_podw("TAK"))
     btn_podw_nie.config(command=lambda: ustaw_podw("NIE"))
     btn_podw_tak.pack(side="left", padx=(0, 5))
     btn_podw_nie.pack(side="left")
 
-    tk.Label(
-        card2_body, text="NAZWA PODWYKONAWCY", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b"
-    ).pack(anchor="w")
+    tk.Label(card2_body, text="NAZWA PODWYKONAWCY", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b").pack(anchor="w")
     e_podwykonawca = tk.Entry(card2_body, font=("Segoe UI", 10), bd=1, relief="solid")
     e_podwykonawca.pack(fill="x", ipady=3, pady=(2, 10))
 
@@ -350,147 +276,85 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
 
     f_k = tk.Frame(row_koszt, bg="#ffffff")
     f_k.grid(row=0, column=0, sticky="ew", padx=(0, 10))
-    tk.Label(
-        f_k, text="KOSZTY NAPRAWY (ZŁ)", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b"
-    ).pack(anchor="w")
+    tk.Label(f_k, text="KOSZTY NAPRAWY (ZŁ)", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b").pack(anchor="w")
     e_koszt = tk.Entry(f_k, font=("Segoe UI", 10), bd=1, relief="solid")
     e_koszt.pack(fill="x", ipady=3, pady=(2, 0))
 
     f_dz = tk.Frame(row_koszt, bg="#ffffff")
     f_dz.grid(row=0, column=1, sticky="ew")
-    tk.Label(
-        f_dz, text="DATA ZAŁATWIENIA *", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#b91c1c"
-    ).pack(anchor="w")
+    tk.Label(f_dz, text="DATA ZAŁATWIENIA *", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#b91c1c").pack(anchor="w")
     e_data_zal = tk.Entry(f_dz, font=("Segoe UI", 10), bd=1, relief="solid")
+    e_data_zal.insert(0, dzisiaj)
     e_data_zal.pack(fill="x", ipady=3, pady=(2, 0))
 
-    # PRZYCZYNA ZAISTNIENIA WADY/USTERKI
-    tk.Label(
-        card2_body, text="PRZYCZYNA ZAISTNIENIA WADY/USTERKI", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b"
-    ).pack(anchor="w")
-    txt_przyczyna = tk.Text(
-        card2_body, font=("Segoe UI", 9), height=2, bd=1, relief="solid"
-    )
+    # PRZYCZYNA WADY
+    tk.Label(card2_body, text="PRZYCZYNA ZAISTNIENIA WADY/USTERKI", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b").pack(anchor="w")
+    txt_przyczyna = tk.Text(card2_body, font=("Segoe UI", 9), height=2, bd=1, relief="solid")
     txt_przyczyna.pack(fill="x", pady=(2, 10))
 
-    # SPOSÓB ZAŁATWIENIA / ROZWIĄZANIA SPRAWY (POLE TEKSTOWE - OPIS DZIAŁAŃ)
-    tk.Label(
-        card2_body,
-        text="SPOSÓB ZAŁATWIENIA / ROZWIĄZANIA SPRAWY",
-        font=("Segoe UI", 8, "bold"),
-        bg="#ffffff",
-        fg="#64748b",
-    ).pack(anchor="w")
-    txt_sposob_opis = tk.Text(
-        card2_body, font=("Segoe UI", 9), height=2, bd=1, relief="solid"
-    )
-    txt_sposob_opis.pack(fill="x", pady=(2, 2))
-
-    tk.Label(
-        card2_body,
-        text="Opis podjętych działań naprawczych",
-        font=("Segoe UI", 7, "italic"),
-        bg="#ffffff",
-        fg="#94a3b8",
-    ).pack(anchor="w", pady=(0, 10))
+    # SPOSÓB ZAŁATWIENIA - OPIS DZIAŁAŃ
+    tk.Label(card2_body, text="OPIS PODJĘTYCH DZIAŁAŃ NAPRAWCZYCH", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b").pack(anchor="w")
+    txt_sposob_opis = tk.Text(card2_body, font=("Segoe UI", 9), height=2, bd=1, relief="solid")
+    txt_sposob_opis.pack(fill="x", pady=(2, 10))
 
     # DZIAŁANIA KORYGUJĄCE
-    tk.Label(
-        card2_body, text="CZY KONIECZNE DZIAŁANIA KORYGUJĄCE?", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b"
-    ).pack(anchor="w")
-    korygujace_var = tk.StringVar(value="TAK")
+    tk.Label(card2_body, text="CZY KONIECZNE DZIAŁANIA KORYGUJĄCE?", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b").pack(anchor="w")
+    korygujace_var = tk.StringVar(value="NIE")
 
     f_kor_btn = tk.Frame(card2_body, bg="#ffffff")
     f_kor_btn.pack(anchor="w", pady=(3, 10))
 
-    btn_kor_tak = tk.Button(
-        f_kor_btn, text="TAK", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=14, pady=2
-    )
-    btn_kor_nie = tk.Button(
-        f_kor_btn, text="NIE", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=14, pady=2
-    )
+    btn_kor_tak = tk.Button(f_kor_btn, text="TAK", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=14, pady=2)
+    btn_kor_nie = tk.Button(f_kor_btn, text="NIE", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=14, pady=2)
 
     def ustaw_kor(val):
         korygujace_var.set(val)
-        btn_kor_tak.config(
-            bg="#1f4e5b" if val == "TAK" else "#ffffff",
-            fg="white" if val == "TAK" else "#475569",
-        )
-        btn_kor_nie.config(
-            bg="#1f4e5b" if val == "NIE" else "#ffffff",
-            fg="white" if val == "NIE" else "#475569",
-        )
+        btn_kor_tak.config(bg="#1f4e5b" if val == "TAK" else "#ffffff", fg="white" if val == "TAK" else "#475569")
+        btn_kor_nie.config(bg="#1f4e5b" if val == "NIE" else "#ffffff", fg="white" if val == "NIE" else "#475569")
 
     btn_kor_tak.config(command=lambda: ustaw_kor("TAK"))
     btn_kor_nie.config(command=lambda: ustaw_kor("NIE"))
     btn_kor_tak.pack(side="left", padx=(0, 5))
     btn_kor_nie.pack(side="left")
 
-    tk.Label(
-        card2_body, text="JAKIE DZIAŁANIA KORYGUJĄCE", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b"
-    ).pack(anchor="w")
-    txt_dzialania_kor = tk.Text(
-        card2_body, font=("Segoe UI", 9), height=2, bd=1, relief="solid"
-    )
+    tk.Label(card2_body, text="JAKIE DZIAŁANIA KORYGUJĄCE", font=("Segoe UI", 8, "bold"), bg="#ffffff", fg="#64748b").pack(anchor="w")
+    txt_dzialania_kor = tk.Text(card2_body, font=("Segoe UI", 9), height=2, bd=1, relief="solid")
     txt_dzialania_kor.pack(fill="x", pady=(2, 20))
 
-    # ŁADOWANIE DANYCH DO FORMULARZA
+    # --- ŁADOWANIE DANYCH Z BAZY ---
     def wczytaj_reklamacje_do_panelu():
         nonlocal aktualna_reklamacja
         nr_szukany = e_szukaj_nr.get().strip().upper().replace("_", "/")
 
-        dane = wczytajDane()
-        znaleziona = None
-        for r in dane:
-            nr_db = r.get("nr_rek", "").strip().upper().replace("_", "/")
-            if nr_db == nr_szukany:
-                znaleziona = r
-                break
-
+        znaleziona = pobierzReklamacjePoNumerze(nr_szukany)
         if not znaleziona:
-            messagebox.showwarning(
-                "Nie znaleziono",
-                f"Nie odnaleziono w bazie reklamacji o numerze: {nr_szukany}",
-            )
+            messagebox.showwarning("Nie znaleziono", f"Nie odnaleziono w bazie reklamacji: {nr_szukany}")
             aktualna_reklamacja = {}
             return
 
         aktualna_reklamacja = znaleziona
-
         status = znaleziona.get("status", "NOWE")
         lbl_status_badge.config(text=f" {status} ")
 
-        odp = znaleziona.get(
-            "odpowiedzialny",
-            znaleziona.get("osoba_rejestrujaca", "Marek Zieliński"),
-        )
+        odp = znaleziona.get("odpowiedzialny") or znaleziona.get("osoba_rejestrujaca") or PRACOWNICY[0]
         lbl_osoba_odp.config(text=f"Osoba odpowiedzialna: {odp}")
-        combo_zalogowany.set(odp)
+        if odp in PRACOWNICY:
+            combo_zalogowany.set(odp)
 
-        # 1. Ładowanie decyzji przyciskowej (UZNANO / UZNANO CZĘŚCIOWO / NIE UZNANO)
-        decyzja_val = znaleziona.get(
-            "sposob_zalatwienia_decyzja",
-            znaleziona.get("forma", "UZNANO CZĘŚCIOWO"),
-        )
+        decyzja_val = znaleziona.get("sposob_zalatwienia_decyzja", znaleziona.get("forma", "UZNANO CZĘŚCIOWO"))
         if decyzja_val not in ["UZNANO", "UZNANO CZĘŚCIOWO", "UZNANO CZEŚCIOWO", "NIE UZNANO"]:
             decyzja_val = "UZNANO CZĘŚCIOWO"
         ustaw_sposob(decyzja_val)
 
-        # 2. Ładowanie opisu tekstowego sposobu załatwienia do pola Text
         txt_sposob_opis.delete("1.0", "end")
-        opis_val = znaleziona.get(
-            "sposob_zalatwienia_opis", znaleziona.get("forma", "")
-        )
-        # Jeśli w polu 'forma' znajdował się tylko krótki status decyzji, nie wklejamy go do tekstu
-        if opis_val in ["UZNANO", "UZNANO CZĘŚCIOWO", "UZNANO CZEŚCIOWO", "NIE UZNANO"]:
-            opis_val = ""
+        opis_val = znaleziona.get("sposob_zalatwienia_opis", znaleziona.get("opis_dzialan", ""))
         txt_sposob_opis.insert("1.0", opis_val)
 
         e_term_std.delete(0, "end")
-        e_term_std.insert(0, znaleziona.get("termin_std", "04.08.2026"))
+        e_term_std.insert(0, znaleziona.get("termin_std", ""))
 
         e_term_akt.delete(0, "end")
-        e_term_akt.insert(0, znaleziona.get("termin_akt", "11.08.2026"))
+        e_term_akt.insert(0, znaleziona.get("termin_akt", ""))
 
         txt_uzasadnienie.delete("1.0", "end")
         uzasadnienie_val = znaleziona.get("uzasadnienie", "").strip()
@@ -503,8 +367,7 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
             wydluzenie_var.set(False)
             f_termDateTime.pack_forget()
 
-        ustaw_podw(znaleziona.get("czy_podwykonawca", "TAK"))
-
+        ustaw_podw(znaleziona.get("czy_podwykonawca", "NIE"))
         e_podwykonawca.delete(0, "end")
         e_podwykonawca.insert(0, znaleziona.get("podwykonawca", ""))
 
@@ -512,112 +375,67 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
         e_koszt.insert(0, str(znaleziona.get("koszty", "")))
 
         e_data_zal.delete(0, "end")
-        e_data_zal.insert(0, znaleziona.get("data_zak", ""))
+        e_data_zal.insert(0, znaleziona.get("data_zak", dzisiaj))
 
         txt_przyczyna.delete("1.0", "end")
         txt_przyczyna.insert("1.0", znaleziona.get("przyczyna", ""))
 
-        ustaw_kor(znaleziona.get("czy_korygujace", "TAK"))
-
+        ustaw_kor(znaleziona.get("czy_korygujace", "NIE"))
         txt_dzialania_kor.delete("1.0", "end")
-        txt_dzialania_kor.insert(
-            "1.0", znaleziona.get("dzialania_korygujace", "")
-        )
+        txt_dzialania_kor.insert("1.0", znaleziona.get("dzialania_korygujace", ""))
 
     btn_laduj.config(command=wczytaj_reklamacje_do_panelu)
 
-    # ZAPIS I PRZEKAZANIE DO ZAMKNIĘCIA
-    # ZAPIS I AUTOMATYCZNE ZAMKNIĘCIE REKLAMACJI
+    # --- ZAPIS I ZAMKNIĘCIE ---
     def zapisz_i_zakoncz():
         if not aktualna_reklamacja:
-            messagebox.showwarning(
-                "Brak danych",
-                "Wpisz numer reklamacji i kliknij '🔍 Wczytaj' przed zapisem!",
-            )
+            messagebox.showwarning("Brak danych", "Najpierw wczytaj zgłoszenie przyciskiem '🔍 Wczytaj'!")
             return
 
         nr_szukany = e_szukaj_nr.get().strip().upper().replace("_", "/")
-        dane_wszystkie = wczytajDane()
-        zmieniono = False
+        opis_sposobu = txt_sposob_opis.get("1.0", "end-1c").strip()
+        decyzja_sposob = sposob_var.get()
 
-        for r in dane_wszystkie:
-            nr_db = r.get("nr_rek", "").strip().upper().replace("_", "/")
-            if nr_db == nr_szukany:
-                opis_sposobu = txt_sposob_opis.get("1.0", "end-1c").strip()
-                decyzja_sposob = sposob_var.get()
+        if decyzja_sposob in ["UZNANO", "UZNANO CZĘŚCIOWO"]:
+            final_status = "UZNANE GWARANCYJNIE"
+        elif decyzja_sposob == "NIE UZNANO":
+            final_status = "NIEUZNANE GWARANCYJNIE"
+        else:
+            final_status = "ZAMKNIĘTE"
 
-                # Zapisujemy sposób załatwienia
-                r["forma"] = opis_sposobu if opis_sposobu else decyzja_sposob
-                r["sposob_zalatwienia_decyzja"] = decyzja_sposob
-                r["sposob_zalatwienia_opis"] = opis_sposobu
+        dane_aktualizacji = {
+            "forma": opis_sposobu if opis_sposobu else decyzja_sposob,
+            "sposob_zalatwienia_decyzja": decyzja_sposob,
+            "sposob_zalatwienia_opis": opis_sposobu,
+            "opis_dzialan": opis_sposobu,
+            "status_realizacji": decyzja_sposob,
+            "termin_std": e_term_std.get().strip(),
+            "termin_akt": e_term_akt.get().strip() if wydluzenie_var.get() else "",
+            "uzasadnienie": txt_uzasadnienie.get("1.0", "end-1c").strip() if wydluzenie_var.get() else "",
+            "czy_podwykonawca": podwykonawca_var.get(),
+            "podwykonawca": e_podwykonawca.get().strip(),
+            "koszty": e_koszt.get().strip(),
+            "data_zak": e_data_zal.get().strip(),
+            "przyczyna": txt_przyczyna.get("1.0", "end-1c").strip(),
+            "czy_korygujace": korygujace_var.get(),
+            "dzialania_korygujace": txt_dzialania_kor.get("1.0", "end-1c").strip(),
+            "status": final_status,
+        }
 
-                r["termin_std"] = e_term_std.get()
-                r["termin_akt"] = (
-                    e_term_akt.get() if wydluzenie_var.get() else ""
-                )
-                r["uzasadnienie"] = (
-                    txt_uzasadnienie.get("1.0", "end-1c")
-                    if wydluzenie_var.get()
-                    else ""
-                )
-                r["czy_podwykonawca"] = podwykonawca_var.get()
-                r["podwykonawca"] = e_podwykonawca.get()
-                r["koszty"] = e_koszt.get()
-                r["data_zak"] = e_data_zal.get()
-                r["przyczyna"] = txt_przyczyna.get("1.0", "end-1c")
-                r["czy_korygujace"] = korygujace_var.get()
-                r["dzialania_korygujace"] = txt_dzialania_kor.get(
-                    "1.0", "end-1c"
-                )
+        # Wywołanie zaktualizowanego modułu bazy (automatycznie regeneruje PDF i JSON w folderze)
+        wynik = aktualizujReklamacje(nr_szukany, dane_aktualizacji, regeneruj_pliki=True)
 
-                # AUTOMATYCZNE ZAMKNIĘCIE REKLAMACJI
-                # Możesz wybrać: "ZAMKNIĘTE" lub uzależnić status od decyzji:
-                if decyzja_sposob in ["UZNANO", "UZNANO CZĘŚCIOWO"]:
-                    r["status"] = "UZNANE GWARANCYJNIE"
-                elif decyzja_sposob == "NIE UZNANO":
-                    r["status"] = "NIEUZNANE GWARANCYJNIE"
-                else:
-                    r["status"] = "ZAMKNIĘTE"
-
-                zmieniono = True
-
-                # Regeneracja PDF oraz pojedynczego pliku JSON w folderze Reklamacje_Dane
-                try:
-                    folder_projektu = os.path.dirname(
-                        os.path.abspath(__file__)
-                    )
-                    nazwa_folderu = nr_db.replace("/", "_")
-                    folder_docelowy = os.path.join(
-                        folder_projektu, "Reklamacje_Dane", nazwa_folderu
-                    )
-
-                    if os.path.exists(folder_docelowy):
-                        generujPdf(folder_docelowy, r, nr_db, folder_projektu)
-                        generujJSON(
-                            folder_docelowy, r, nazwa_folderu, folder_projektu
-                        )
-                        print(
-                            f"[PANEL PRACOWNIKA] Zaktualizowano i zamknięto pliki w: {nazwa_folderu}"
-                        )
-                except Exception as ex:
-                    print(f"[BŁĄD GENEROWANIA PLIKÓW]: {ex}")
-
-                break
-
-        if zmieniono:
-            zapiszDane(dane_wszystkie)
-            messagebox.showinfo(
-                "Sukces",
-                f"Zgłoszenie {nr_szukany} zostało pomyślnie zakończone i zamknięte!",
-            )
+        if wynik:
+            messagebox.showinfo("Sukces", f"Zgłoszenie {nr_szukany} zostało zamknięte ze statusem:\n'{final_status}'.")
             if odswiez_callback:
                 odswiez_callback()
             win.destroy()
+        else:
+            messagebox.showerror("Błąd zapisu", f"Nie udało się zapisać zmian dla {nr_szukany}.")
 
-            
     btn_finish = tk.Button(
         card2_body,
-        text="✉ Wyślij (zakończ zgłoszenie)",
+        text="✉ Zapisz i zakończ zgłoszenie",
         font=("Segoe UI", 10, "bold"),
         bg="#1f4e5b",
         fg="white",
@@ -631,13 +449,15 @@ def otworzPanelRealizacji(parent_window, nr_rek_start="ZG/2026/001", odswiez_cal
     )
     btn_finish.pack(anchor="w", pady=(0, 10))
 
+    # Domyślny start
+    ustaw_sposob("UZNANO CZĘŚCIOWO")
+    ustaw_podw("NIE")
+    ustaw_kor("NIE")
     wczytaj_reklamacje_do_panelu()
 
 
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Testowanie widoku")
-
     otworzPanelRealizacji(root, "ZG/2026/001")
-
     root.mainloop()
