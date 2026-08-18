@@ -1,0 +1,630 @@
+[
+  {
+    "id": 1,
+    "nr_rek": "ZG/2026/001",
+    "data_zgl": "21.07.2026",
+    "klient": "ORLEN",
+    "nr_projektu": "2334444",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Franciszek Wrona",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "Marek Zieliński",
+    "status": "W TRAKCIE",
+    "zalaczniki": [
+      "protokol_ogledzin.pdf",
+      "zdjecia_zlacza_W12.zip"
+    ],
+    "forma": "UZNANO",
+    "termin_std": "04.08.2026",
+    "termin_akt": "",
+    "uzasadnienie": "",
+    "czy_podwykonawca": "TAK",
+    "podwykonawca": "jan",
+    "koszty": "4242",
+    "data_zak": "11.08.2026",
+    "przyczyna": "Wada fabryczna\t\t\t\t\t\t\t",
+    "sposob_zalatwienia_opis": "Wymiana uszkodzonej części",
+    "czy_korygujace": "NIE",
+    "dzialania_korygujace": ""
+  },
+  {
+    "id": 2,
+    "nr_rek": "ZG/2026/002",
+    "data_zgl": "22.07.2026",
+    "klient": "KGHM",
+    "nr_projektu": "5541223",
+    "opis": "Awarie sterownika pompy głównej.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Jan Kowalski",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "Piotr Kowalski",
+    "status": "CZEKA NA ZAMKNIĘCIE",
+    "zalaczniki": [],
+    "forma": "Wymiana wadliwej części",
+    "sposob_zalatwienia_decyzja": "UZNANO",
+    "sposob_zalatwienia_opis": "Wymiana wadliwej części",
+    "termin_std": "04.08.2026",
+    "termin_akt": "",
+    "uzasadnienie": "",
+    "czy_podwykonawca": "TAK",
+    "podwykonawca": "Janusz",
+    "koszty": "5000",
+    "data_zak": "12.06.2026",
+    "przyczyna": "Wada fabryczna\t\t",
+    "czy_korygujace": "TAK",
+    "dzialania_korygujace": ""
+  },
+  {
+    "id": 3,
+    "nr_rek": "ZG/2026/003",
+    "data_zgl": "23.07.2026",
+    "klient": "Lotos Asfalt",
+    "nr_projektu": "1002394",
+    "opis": "Błąd wskazań czujnika temperatury w zbiorniku T-04.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Ewa Zalewska",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "Marta Wiśniewska",
+    "status": "ZATWIERDZONE",
+    "zalaczniki": [
+      "raport_kalibracji.pdf"
+    ]
+  },
+  {
+    "id": 4,
+    "nr_rek": "ZG/2026/004",
+    "data_zgl": "25.07.2026",
+    "klient": "PGE Energia",
+    "nr_projektu": "8871230",
+    "opis": "Uszkodzenie powłoki lakierniczej na obudowie rozdzielnicy SN.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Franciszek Wrona",
+    "dyrektor": "Piotr Wiśniewski",
+    "odpowiedzialny": "Jan Kowalski",
+    "status": "PRZEKAZANE DO REALIZACJI",
+    "zalaczniki": [
+      "foto_obudowa.jpg"
+    ]
+  },
+  {
+    "id": 5,
+    "nr_rek": "ZG/2026/005",
+    "data_zgl": "28.07.2026",
+    "klient": "Ciech S.A.",
+    "nr_projektu": "3341902",
+    "opis": "Głośna praca i wibracje na przekładni taśmociągu T-1.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Tomasz Adamski",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "Marek Zieliński",
+    "status": "PRZEKAZANE DO REALIZACJI",
+    "zalaczniki": [
+      "pomiary_wibracji.xlsx"
+    ]
+  },
+  {
+    "id": 6,
+    "nr_rek": "ZG/2026/006",
+    "data_zgl": "01.08.2026",
+    "klient": "Azoty Puławy",
+    "nr_projektu": "7712399",
+    "opis": "Brak komunikacji Modbus pomiędzy PLC a panelem HMI.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Jan Kowalski",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "Piotr Zieliński",
+    "status": "PRZEKAZANE DO REALIZACJI",
+    "zalaczniki": [
+      "logi_systemowe.txt"
+    ]
+  },
+  {
+    "id": 7,
+    "nr_rek": "ZG/2026/007",
+    "data_zgl": "02.08.2026",
+    "klient": "ArcelorMittal",
+    "nr_projektu": "5001122",
+    "opis": "Uszkodzony uszczelniacz wału pompy hydraulicznej.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Ewa Zalewska",
+    "dyrektor": "Piotr Wiśniewski",
+    "odpowiedzialny": "Anna Nowak",
+    "status": "ZATWIERDZONE",
+    "zalaczniki": [
+      "zdjecie_uszczelnienia.png"
+    ]
+  },
+  {
+    "id": 8,
+    "nr_rek": "ZG/2026/008",
+    "data_zgl": "03.08.2026",
+    "klient": "Budimex",
+    "nr_projektu": "9982301",
+    "opis": "Niezgodność wymiarowa dostarczonych profili montażowych.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Tomasz Adamski",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "Marek Zieliński",
+    "status": "W TRAKCIE",
+    "zalaczniki": [
+      "protokol_wymiarowy.pdf"
+    ]
+  },
+  {
+    "id": 9,
+    "nr_rek": "ZG/2026/009",
+    "data_zgl": "04.08.2026",
+    "klient": "STRABAG",
+    "nr_projektu": "4431900",
+    "opis": "Brak kompletu śrub montażowych w opakowaniu zbiorczym.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Franciszek Wrona",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "Piotr Kowalski",
+    "status": "ODRZUCONE",
+    "zalaczniki": []
+  },
+  {
+    "id": 10,
+    "nr_rek": "ZG/2026/010",
+    "data_zgl": "05.08.2026",
+    "klient": "Polska Spółka Gazownictwa",
+    "nr_projektu": "6120394",
+    "opis": "Przepalenie grzałki w zespole podgrzewacza gazu.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Jan Kowalski",
+    "dyrektor": "Piotr Wiśniewski",
+    "odpowiedzialny": "Marta Wiśniewska",
+    "status": "ODRZUCONE",
+    "zalaczniki": [
+      "ekspertyza_elektryczna.pdf"
+    ]
+  },
+  {
+    "data_zgl": "05.08.2026",
+    "klient": "ORLEN",
+    "nr_projektu": "2334455",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Marian Kowalski",
+    "dyrektor": "Piotr Wiśniewski",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "zalaczniki": [],
+    "id": 11,
+    "nr_rek": "ZG/2026/011"
+  },
+  {
+    "data_zgl": "05.08.2026",
+    "klient": "ORLEN",
+    "nr_projektu": "23322332",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Marian Kowalski",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "—",
+    "status": "ODRZUCONE",
+    "zalaczniki": [],
+    "id": 12,
+    "nr_rek": "ZG/2026/012"
+  },
+  {
+    "data_zgl": "Data wpłynięcia",
+    "klient": "Klient",
+    "nr_projektu": "2334444",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Osoba rejestrująca",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "zalaczniki": [
+      "test_pdf.pdf"
+    ],
+    "id": 13,
+    "nr_rek": "ZG/2026/013"
+  },
+  {
+    "data_zgl": "Data wpłynięcia",
+    "klient": "Klient",
+    "nr_projektu": "98798987",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Osoba rejestrująca",
+    "dyrektor": "Piotr Wiśniewski",
+    "odpowiedzialny": "—",
+    "status": "ODRZUCONE",
+    "id": 14,
+    "nr_rek": "ZG/2026/014",
+    "zalaczniki": [
+      "Reklamacje_Dane\\test_pdf.pdf"
+    ]
+  },
+  {
+    "data_zgl": "Data wpłynięcia",
+    "klient": "Klient",
+    "nr_projektu": "2334444",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Osoba rejestrująca",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "id": 15,
+    "nr_rek": "ZG/2026/015",
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_015\\test_pdf.pdf"
+    ]
+  },
+  {
+    "data_zgl": "Data wpłynięcia",
+    "klient": "Klient",
+    "nr_projektu": "2334888",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Osoba rejestrująca",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "—",
+    "status": "ODRZUCONE",
+    "id": 16,
+    "nr_rek": "ZG/2026/016",
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_016\\test_pdf.pdf"
+    ]
+  },
+  {
+    "data_zgl": "Data wpłynięcia",
+    "klient": "Klient",
+    "nr_projektu": "2334444",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Osoba rejestrująca",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "id": 17,
+    "nr_rek": "ZG/2026/017",
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_017\\test_pdf.pdf"
+    ]
+  },
+  {
+    "data_zgl": "Data wpłynięcia",
+    "klient": "Klient",
+    "nr_projektu": "2334444",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Osoba rejestrująca",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "id": 18,
+    "nr_rek": "ZG/2026/018",
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_018\\ZG_2026_018_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_018\\test_pdf.pdf"
+    ]
+  },
+  {
+    "data_zgl": "Data wpłynięcia",
+    "klient": "Klient",
+    "nr_projektu": "2334444",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Osoba rejestrująca",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "id": 19,
+    "nr_rek": "ZG/2026/019",
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_019\\ZG_2026_019_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_019\\test_pdf.pdf"
+    ]
+  },
+  {
+    "data_zgl": "Data wpłynięcia",
+    "klient": "Klient",
+    "nr_projektu": "2334444",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Osoba rejestrująca",
+    "dyrektor": "Piotr Wiśniewski",
+    "odpowiedzialny": "—",
+    "status": "PRZEKAZANE DO REALIZACJI",
+    "id": 20,
+    "nr_rek": "ZG/2026/020",
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_020\\ZG_2026_020_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_020\\ZG_2026_020.json",
+      "Reklamacje_Dane\\ZG_2026_020\\test_pdf.pdf"
+    ]
+  },
+  {
+    "data_zgl": "Data wpłynięcia",
+    "klient": "Klient",
+    "nr_projektu": "2334444",
+    "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Osoba rejestrująca",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "id": 21,
+    "nr_rek": "ZG/2026/021",
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_021\\ZG_2026_021_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_021\\ZG_2026_021.json"
+    ]
+  },
+  {
+    "data_zgl": "06.08.2026",
+    "klient": "ORLEN",
+    "nr_projektu": "42424242",
+    "opis": "Nieszczelność instalacji",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Janusz Nowak",
+    "dyrektor": "Piotr Wiśniewski",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "id": 22,
+    "nr_rek": "ZG/2026/022",
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_022\\ZG_2026_022_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_022\\ZG_2026_022.json",
+      "Reklamacje_Dane\\ZG_2026_022\\test_pdf.pdf"
+    ]
+  },
+  {
+    "nr_rek": "ZG/2026/023",
+    "data_zgl": "11.08.2026",
+    "klient": "ORLEN",
+    "nr_projektu": "23523142",
+    "opis": "Wadliwa instalacja",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Kamil Kowalski",
+    "dyrektor": "Anna Kowalska",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "id": 23,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_023\\ZG_2026_023_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_023\\ZG_2026_023.json",
+      "Reklamacje_Dane\\ZG_2026_023\\test_pdf.pdf"
+    ]
+  },
+  {
+    "nr_rek": "ZG/2026/024",
+    "data_zgl": "11.08.2026",
+    "klient": "ORLEN",
+    "nr_projektu": "4314141",
+    "opis": "Wadliwa instalacja cos tam",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Janusz Kowalski",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "id": 24,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_024\\ZG_2026_024_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_024\\ZG_2026_024.json",
+      "Reklamacje_Dane\\ZG_2026_024\\test_pdf.pdf"
+    ]
+  },
+  {
+    "nr_rek": "ZG/2026/025",
+    "data_zgl": "11.08.2026",
+    "klient": "faiio[wha",
+    "nr_projektu": "242424",
+    "opis": "FAIWFWPAFJ",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "ufesopfh",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "id": 25,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_025\\ZG_2026_025_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_025\\ZG_2026_025.json",
+      "Reklamacje_Dane\\ZG_2026_025\\test_pdf.pdf"
+    ]
+  },
+  {
+    "nr_rek": "ZG/2026/026",
+    "data_zgl": "11.08.2026",
+    "klient": "nijafjaiwj",
+    "nr_projektu": "i492942",
+    "opis": "iiojfijwafiajo",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "janusz",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "—",
+    "status": "CZEKA NA ZAMKNIĘCIE",
+    "id": 26,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_026\\ZG_2026_026_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_026\\ZG_2026_026.json",
+      "Reklamacje_Dane\\ZG_2026_026\\test_pdf.pdf"
+    ],
+    "forma": "UZNANO",
+    "termin_std": "04.08.2026",
+    "termin_akt": "11.08.2026",
+    "uzasadnienie": "",
+    "czy_podwykonawca": "TAK",
+    "podwykonawca": "ktos",
+    "koszty": "4560",
+    "data_zak": "11.08.2026",
+    "przyczyna": "Wada fabryczna\t",
+    "czy_korygujace": "TAK",
+    "dzialania_korygujace": "Wymiana"
+  },
+  {
+    "nr_rek": "ZG/2026/027",
+    "data_zgl": "11.08.2026",
+    "klient": "wda",
+    "nr_projektu": "3553",
+    "opis": "ifiejapjfpjpjiopjgrjgr",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Kamil",
+    "dyrektor": "Piotr Wiśniewski",
+    "odpowiedzialny": "—",
+    "status": "UZNANE GWARANCYJNIE",
+    "id": 27,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_027\\ZG_2026_027_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_027\\ZG_2026_027.json",
+      "Reklamacje_Dane\\ZG_2026_027\\test_pdf.pdf"
+    ],
+    "forma": "Wymiana wadliwej części",
+    "sposob_zalatwienia_decyzja": "UZNANO",
+    "sposob_zalatwienia_opis": "Wymiana wadliwej części",
+    "termin_std": "04.08.2026",
+    "termin_akt": "",
+    "uzasadnienie": "",
+    "czy_podwykonawca": "NIE",
+    "podwykonawca": "firma",
+    "koszty": "8900",
+    "data_zak": "13.08.2026",
+    "przyczyna": "",
+    "czy_korygujace": "NIE",
+    "dzialania_korygujace": ""
+  },
+  {
+    "nr_rek": "ZG/2026/028",
+    "data_zgl": "11.08.2026",
+    "klient": "da",
+    "nr_projektu": "4242424",
+    "opis": "fuofgaugfuiwaf",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "kamil",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "—",
+    "status": "ODRZUCONE",
+    "id": 28,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_028\\ZG_2026_028_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_028\\ZG_2026_028.json",
+      "Reklamacje_Dane\\ZG_2026_028\\test_pdf.pdf"
+    ]
+  },
+  {
+    "nr_rek": "ZG/2026/029",
+    "data_zgl": "11.08.2026",
+    "klient": "wygdyuig",
+    "nr_projektu": "2832832",
+    "opis": "gafauwfgwaifgwaifgaiw",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "uyfwuiyvduyg",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "—",
+    "status": "ODRZUCONE",
+    "id": 29,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_029\\ZG_2026_029_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_029\\ZG_2026_029.json",
+      "Reklamacje_Dane\\ZG_2026_029\\test_pdf.pdf"
+    ]
+  },
+  {
+    "nr_rek": "ZG/2026/030",
+    "data_zgl": "11.08.2026",
+    "klient": "dasdas",
+    "nr_projektu": "2424242",
+    "opis": "fafwafwafwafawf",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "awdwad",
+    "dyrektor": "Piotr Wiśniewski",
+    "odpowiedzialny": "—",
+    "status": "NIEUZNANE GWARANCYJNIE",
+    "id": 30,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_030\\ZG_2026_030_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_030\\ZG_2026_030.json",
+      "Reklamacje_Dane\\ZG_2026_030\\test_pdf.pdf"
+    ],
+    "forma": "Nie podlega reklamacji",
+    "sposob_zalatwienia_decyzja": "NIE UZNANO",
+    "sposob_zalatwienia_opis": "Nie podlega reklamacji",
+    "termin_std": "04.08.2026",
+    "termin_akt": "",
+    "uzasadnienie": "",
+    "czy_podwykonawca": "NIE",
+    "podwykonawca": "",
+    "koszty": "",
+    "data_zak": "",
+    "przyczyna": "",
+    "czy_korygujace": "NIE",
+    "dzialania_korygujace": ""
+  },
+  {
+    "nr_rek": "ZG/2026/031",
+    "data_zgl": "11.08.2026",
+    "klient": "sdasda",
+    "nr_projektu": "24242",
+    "opis": "fasfasfas",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "dsd",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "—",
+    "status": "PRZEKAZANE DO REALIZACJI",
+    "id": 31,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_031\\ZG_2026_031_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_031\\ZG_2026_031.json",
+      "Reklamacje_Dane\\ZG_2026_031\\test_pdf.pdf"
+    ]
+  },
+  {
+    "nr_rek": "ZG/2026/032",
+    "data_zgl": "13.08.2026",
+    "klient": "KGHM",
+    "nr_projektu": "242424",
+    "opis": "Wadliwa konstrukcja czegoś tam",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Janusz Kowalski",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "—",
+    "status": "NOWE",
+    "id": 32,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_032\\ZG_2026_032_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_032\\ZG_2026_032.json",
+      "Reklamacje_Dane\\ZG_2026_032\\test_pdf.pdf"
+    ]
+  },
+  {
+    "nr_rek": "ZG/2026/033",
+    "data_zgl": "17.08.2026",
+    "klient": "ORLEN",
+    "nr_projektu": "23421342",
+    "nr_zadania": "23421342",
+    "opis": "Wadliwa instalacja cos tam cos",
+    "pracujesz_jako": "Osoba rejestrująca",
+    "osoba_rejestrujaca": "Jan Kowalski",
+    "dyrektor": "Marek Nowak",
+    "odpowiedzialny": "Anna Kowalska",
+    "status": "UZNANE GWARANCYJNIE",
+    "id": 33,
+    "zalaczniki": [
+      "Reklamacje_Dane\\ZG_2026_033\\ZG_2026_033_KARTA.pdf",
+      "Reklamacje_Dane\\ZG_2026_033\\ZG_2026_033.json",
+      "Reklamacje_Dane\\ZG_2026_033\\test_pdf.pdf"
+    ],
+    "forma": "wymieniono wadliwą część",
+    "sposob_zalatwienia_decyzja": "UZNANO",
+    "sposob_zalatwienia_opis": "wymieniono wadliwą część",
+    "opis_dzialan": "wymieniono wadliwą część",
+    "status_realizacji": "UZNANO",
+    "termin_std": "",
+    "termin_akt": "",
+    "uzasadnienie": "",
+    "czy_podwykonawca": "NIE",
+    "podwykonawca": "",
+    "koszty": "4850",
+    "data_zak": "17.08.2026",
+    "przyczyna": "Wada fabryczna",
+    "czy_korygujace": "TAK",
+    "dzialania_korygujace": "cos tam cos tam"
+  }
+]

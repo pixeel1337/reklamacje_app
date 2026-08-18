@@ -1,0 +1,18 @@
+{
+  "data_zgl": "Data wpłynięcia",
+  "klient": "Klient",
+  "nr_projektu": "2334444",
+  "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+  "pracujesz_jako": "Osoba rejestrująca",
+  "osoba_rejestrujaca": "Osoba rejestrująca",
+  "dyrektor": "Piotr Wiśniewski",
+  "odpowiedzialny": "—",
+  "status": "PRZEKAZANE DO REALIZACJI",
+  "id": 20,
+  "nr_rek": "ZG/2026/020",
+  "zalaczniki": [
+    "Reklamacje_Dane\\ZG_2026_020\\ZG_2026_020_KARTA.pdf",
+    "Reklamacje_Dane\\ZG_2026_020\\ZG_2026_020.json",
+    "Reklamacje_Dane\\ZG_2026_020\\test_pdf.pdf"
+  ]
+}
