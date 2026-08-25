@@ -1,0 +1,31 @@
+{
+  "nr_rek": "ZG/2026/030",
+  "data_zgl": "11.08.2026",
+  "klient": "dasdas",
+  "nr_projektu": "2424242",
+  "opis": "fafwafwafwafawf",
+  "pracujesz_jako": "Osoba rejestrująca",
+  "osoba_rejestrujaca": "awdwad",
+  "dyrektor": "Piotr Wiśniewski",
+  "odpowiedzialny": "—",
+  "status": "NIEUZNANE GWARANCYJNIE",
+  "id": 30,
+  "zalaczniki": [
+    "Reklamacje_Dane\\ZG_2026_030\\ZG_2026_030_KARTA.pdf",
+    "Reklamacje_Dane\\ZG_2026_030\\ZG_2026_030.json",
+    "Reklamacje_Dane\\ZG_2026_030\\test_pdf.pdf"
+  ],
+  "forma": "Nie podlega reklamacji",
+  "sposob_zalatwienia_decyzja": "NIE UZNANO",
+  "sposob_zalatwienia_opis": "Nie podlega reklamacji",
+  "termin_std": "04.08.2026",
+  "termin_akt": "",
+  "uzasadnienie": "",
+  "czy_podwykonawca": "NIE",
+  "podwykonawca": "",
+  "koszty": "",
+  "data_zak": "",
+  "przyczyna": "",
+  "czy_korygujace": "NIE",
+  "dzialania_korygujace": ""
+}

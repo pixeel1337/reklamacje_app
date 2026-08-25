@@ -1,0 +1,189 @@
+
+horses:
+get - wprowadzenie maxTimeMS(5000) np. żeby nie wywalilo serwera
+stronicowanie - .limit(20).skip(0) .limit(20).skip(20)
+
+
+
+
+const offspring = await Horse.find(queryFilter)
+    .populate("breeder")
+    .sort({ birthYear: -1 }); // -1 to od najmłodszego, 1 to od najstarszego
+
+
+
+// 1. Wyciągasz z req.query nowe pole
+const { name, birthYear, countryCode, ointment } = req.query;
+
+let queryFilter = { name: name };
+
+if(birthYear) queryFilter.birthYear = Number(birthYear);
+
+// 2. Dopisujesz kolejny dynamiczny warunek if
+if(ointment) {
+    queryFilter.ointment = ointment; // np. { name: "Mustang", ointment: "siwa" }
+}
+
+const horses = await Horse.find(queryFilter);
+
+
+
+
+router.get("/:name/:countryCode/:birthYear/offspring", async (req, res) => {
+    try {
+        const { name, countryCode, birthYear } = req.params;
+        
+        // 1. Wyciągamy opcjonalny parametr z req.query (np. ?bornAfter=2020)
+        const { bornAfter } = req.query;
+        
+        const country = await Country.findOne({ code: countryCode.toUpperCase() });
+        if(!country) {
+            return res.status(404).json({ message: "Niepoprawny kod kraju!" });
+        }
+
+        const parent = await Horse.findOne({ name, birthCountry: country._id, birthYear: parseInt(birthYear) });
+        
+        if (!parent) {
+            return res.status(404).json({ message: "Nie znaleziono konia-rodzica o podanych danych!" });
+        }
+
+        // 2. Budujemy podstawowy filtr: koń musi być potomkiem (ojciec LUB matka)
+        let queryFilter = {
+            $or: [
+                { father: parent._id },
+                { mother: parent._id }
+            ]
+        };
+
+        // 3. Dynamiczny krok: Jeśli użytkownik podał ?bornAfter, dorzucamy operator $gt do filtra
+        if (bornAfter) {
+            queryFilter.birthYear = { $gt: parseInt(bornAfter) };
+        }
+
+        // 4. Odpytujemy bazę danych przy użyciu przygotowanego dynamicznie obiektu queryFilter
+        const offspring = await Horse.find(queryFilter)
+        .populate("breeder")
+        .populate("birthCountry");
+
+        return res.status(200).json({
+            parent: {
+                name: parent.name,
+                birthYear: parent.birthYear,
+                gender: parent.gender
+            },
+            count: offspring.length,
+            offspring: offspring
+        });
+
+    } catch (err) {
+        return res.status(500).json({ error: "Błąd podczas pobierania potomstwa: " + err.message });
+    }
+});
+
+
+
+
+
+router.get("/", async (req, res) => {
+    try {
+        // 1. Pobieramy parametry stronicowania z req.query (z bezpiecznymi wartościami domyślnymi)
+        const page = parseInt(req.query.page) || 1;    // Jeśli nie podano, startujemy od 1 strony
+        const limit = parseInt(req.query.limit) || 10; // Jeśli nie podano, bierzemy 10 koni na stronę
+        
+        // Obliczamy przesunięcie (ile koni z początku bazy trzeba pominąć)
+        const skip = (page - 1) * limit;
+
+        // 2. Liczymy, ile W SUMIE koni znajduje się w całej bazie danych
+        const totalHorses = await Horse.countDocuments({});
+
+        // 3. Pobieramy tylko wybraną paczkę (stronę) koni
+        const horses = await Horse.find({})
+            .populate("breeder")
+            .populate("birthCountry")
+            .populate("father")
+            .populate("mother")
+            .sort({ birthYear: -1 }) // Sortujemy od najmłodszych (najwyższe roczniki na górze)
+            .skip(skip)              // Przeskakujemy konie z poprzednich stron
+            .limit(limit);           // Ograniczamy wynik do zadeklarowanego limitu
+
+        // 4. Zwracamy konie oraz pełne metadane stronicowania
+        return res.status(200).json({
+            pagination: {
+                totalResults: totalHorses,                  // Łączna liczba wszystkich koni w bazie
+                totalPages: Math.ceil(totalHorses / limit), // Ile stron ma cała baza przy tym limicie
+                currentPage: page,                          // Na której stronie aktualnie znajduje się użytkownik
+                resultsPerPage: limit                       // Ile koni jest zwracanych na jedną stronę
+            },
+            horses: horses // Tablica z wyciętym fragmentem danych (maksymalnie 'limit' obiektów)
+        });
+
+    } catch(err) {
+        return res.status(500).json({ error: "Błąd bazy danych: " + err.message });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if (!this.isModified("birthYear") && !this.isModified("father") && !this.isModified("mother")) {
+    return next(); // <--- BŁYSKAWICZNE ZIELONE ŚWIATŁO!
+}
+
+
+// Znajdź wszystkie konie, które urodziły się w 2020 roku
+await Horse.find({ birthYear: 2020 });
+
+// Znajdź jednego, konkretnego konia o imieniu "Mustang"
+await Horse.findOne({ name: "Mustang" });
+
+// Znajdź konie urodzone w roku 2015 LUB PÓŹNIEJ (birthYear >= 2015)
+await Horse.find({ 
+    birthYear: { $gte: 2015 } 
+});
+
+// Znajdź młode konie (np. rocznik mniejszy niż 2023, czyli starsze wiekiem)
+await Horse.find({ 
+    birthYear: { $lt: 2023 } 
+});
+
+// Znajdź konie, które nazywają się "Mustang" I urodziły się w 2020 roku
+await Horse.find({ 
+    name: "Mustang", 
+    birthYear: 2020 
+});
+
+// Znajdź konie, których ojcem jest Koń A LUB matką jest Koń A
+await Horse.find({
+    $or: [
+        { father: parentId },
+        { mother: parentId }
+    ]
+});
+
+// Znajdź konie, których maść to "siwa" LUB "kara"
+await Horse.find({ 
+    ointment: { $in: ["siwa", "kara"] } 
+});
+
+// Znajdź wszystkie konie, posortuj je od najmłodszego (malejąco po roczniku) 
+// i weź tylko pierwsze 5 wyników
+await Horse.find({})
+    .sort({ birthYear: -1 }) // -1 to malejąco (od największej liczby), 1 to rosnąco
+    .limit(5);
+
+// Wyciągnij z bazy tylko imię i rocznik konia, pomijając resztę pól (tzw. projekcja)
+await Horse.find({}, "name birthYear");

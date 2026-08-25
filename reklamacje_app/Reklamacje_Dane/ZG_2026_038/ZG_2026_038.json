@@ -1,0 +1,33 @@
+{
+  "nr_rek": "ZG/2026/038",
+  "data_zgl": "24.08.2026",
+  "klient": "32",
+  "nr_projektu": "323232",
+  "nr_zadania": "323232",
+  "opis": "dwdwd",
+  "pracujesz_jako": "Osoba rejestrująca",
+  "osoba_rejestrujaca": "Jan Kowalski",
+  "dyrektor": "Anna Kowalska",
+  "odpowiedzialny": "—",
+  "status": "NIEUZNANE GWARANCYJNIE",
+  "id": 38,
+  "zalaczniki": [
+    "..\\Reklamacje_Dane\\ZG_2026_038\\ZG_2026_038_KARTA.pdf",
+    "..\\Reklamacje_Dane\\ZG_2026_038\\ZG_2026_038.json"
+  ],
+  "forma": "NIE UZNANO",
+  "sposob_zalatwienia_decyzja": "NIE UZNANO",
+  "sposob_zalatwienia_opis": "",
+  "opis_dzialan": "",
+  "status_realizacji": "NIE UZNANO",
+  "termin_std": "",
+  "termin_akt": "",
+  "uzasadnienie": "",
+  "czy_podwykonawca": "NIE",
+  "podwykonawca": "",
+  "koszty": "",
+  "data_zak": "24.08.2026",
+  "przyczyna": "",
+  "czy_korygujace": "NIE",
+  "dzialania_korygujace": ""
+}

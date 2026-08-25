@@ -1,0 +1,16 @@
+{
+  "data_zgl": "Data wpłynięcia",
+  "klient": "Klient",
+  "nr_projektu": "2334888",
+  "opis": "Nieszczelność instalacji na złączu rurociągu W-12, widoczny wyciek podczas rozruchu instalacji.",
+  "pracujesz_jako": "Osoba rejestrująca",
+  "osoba_rejestrujaca": "Osoba rejestrująca",
+  "dyrektor": "Anna Kowalska",
+  "odpowiedzialny": "—",
+  "status": "ODRZUCONE",
+  "id": 16,
+  "nr_rek": "ZG/2026/016",
+  "zalaczniki": [
+    "Reklamacje_Dane\\ZG_2026_016\\test_pdf.pdf"
+  ]
+}

@@ -1,0 +1,13 @@
+#katalogi
+/__pycache__
+/.vscode
+/venv
+/build
+/dist
+
+#pliki
+.env
+*.exe
+.DS_Store
+*.pyc
+SystemReklamacji.spec

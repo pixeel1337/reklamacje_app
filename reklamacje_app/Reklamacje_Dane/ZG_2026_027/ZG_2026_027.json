@@ -1,0 +1,31 @@
+{
+  "nr_rek": "ZG/2026/027",
+  "data_zgl": "11.08.2026",
+  "klient": "wda",
+  "nr_projektu": "3553",
+  "opis": "ifiejapjfpjpjiopjgrjgr",
+  "pracujesz_jako": "Osoba rejestrująca",
+  "osoba_rejestrujaca": "Kamil",
+  "dyrektor": "Piotr Wiśniewski",
+  "odpowiedzialny": "—",
+  "status": "UZNANE GWARANCYJNIE",
+  "id": 27,
+  "zalaczniki": [
+    "Reklamacje_Dane\\ZG_2026_027\\ZG_2026_027_KARTA.pdf",
+    "Reklamacje_Dane\\ZG_2026_027\\ZG_2026_027.json",
+    "Reklamacje_Dane\\ZG_2026_027\\test_pdf.pdf"
+  ],
+  "forma": "Wymiana wadliwej części",
+  "sposob_zalatwienia_decyzja": "UZNANO",
+  "sposob_zalatwienia_opis": "Wymiana wadliwej części",
+  "termin_std": "04.08.2026",
+  "termin_akt": "",
+  "uzasadnienie": "",
+  "czy_podwykonawca": "NIE",
+  "podwykonawca": "firma",
+  "koszty": "8900",
+  "data_zak": "13.08.2026",
+  "przyczyna": "",
+  "czy_korygujace": "NIE",
+  "dzialania_korygujace": ""
+}

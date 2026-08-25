@@ -1,0 +1,29 @@
+{
+  "nr_rek": "ZG/2026/026",
+  "data_zgl": "11.08.2026",
+  "klient": "nijafjaiwj",
+  "nr_projektu": "i492942",
+  "opis": "iiojfijwafiajo",
+  "pracujesz_jako": "Osoba rejestrująca",
+  "osoba_rejestrujaca": "janusz",
+  "dyrektor": "Marek Nowak",
+  "odpowiedzialny": "—",
+  "status": "CZEKA NA ZAMKNIĘCIE",
+  "id": 26,
+  "zalaczniki": [
+    "Reklamacje_Dane\\ZG_2026_026\\ZG_2026_026_KARTA.pdf",
+    "Reklamacje_Dane\\ZG_2026_026\\ZG_2026_026.json",
+    "Reklamacje_Dane\\ZG_2026_026\\test_pdf.pdf"
+  ],
+  "forma": "UZNANO",
+  "termin_std": "04.08.2026",
+  "termin_akt": "11.08.2026",
+  "uzasadnienie": "",
+  "czy_podwykonawca": "TAK",
+  "podwykonawca": "ktos",
+  "koszty": "4560",
+  "data_zak": "11.08.2026",
+  "przyczyna": "Wada fabryczna\t",
+  "czy_korygujace": "TAK",
+  "dzialania_korygujace": "Wymiana"
+}
